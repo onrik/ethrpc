@@ -126,7 +126,7 @@ func (rpc *EthRPC) NetListening() (bool, error) {
 	return listening, err
 }
 
-// NetPeerCount returns number of peers currenly connected to the client.
+// NetPeerCount returns number of peers currently connected to the client.
 func (rpc *EthRPC) NetPeerCount() (int, error) {
 	var response string
 	if err := rpc.call("net_peerCount", &response); err != nil {
