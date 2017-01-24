@@ -1,4 +1,6 @@
 # Ethrpc
+[![GoDoc](https://godoc.org/github.com/onrik/ethrpc?status.svg)](https://godoc.org/github.com/onrik/ethrpc)
+
 Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getcompilers).
 
 ##### Usage:
