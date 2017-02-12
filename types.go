@@ -13,7 +13,7 @@ type T struct {
 	GasPrice *big.Int
 	Value    *big.Int
 	Data     string
-	Nonce    *big.Int
+	Nonce    int
 }
 
 func (t *T) MarshalJSON() ([]byte, error) {
@@ -35,8 +35,8 @@ func (t *T) MarshalJSON() ([]byte, error) {
 	if t.Data != "" {
 		params["data"] = t.Data
 	}
-	if t.Nonce != nil {
-		params["nonce"] = BigToHex(*t.Nonce)
+	if t.Nonce > 0 {
+		params["nonce"] = IntToHex(t.Nonce)
 	}
 
 	return json.Marshal(params)

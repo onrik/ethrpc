@@ -303,6 +303,26 @@ func (rpc *EthRPC) EthSendRawTransaction(data string) (string, error) {
 	return hash, err
 }
 
+// EthCall executes a new message call immediately without creating a transaction on the block chain.
+func (rpc *EthRPC) EthCall(transaction *T, tag string) (string, error) {
+	var data string
+
+	err := rpc.call("eth_call", &data, transaction, tag)
+	return data, err
+}
+
+// EthEstimateGas makes a call or transaction, which won't be added to the blockchain and returns the used gas, which can be used for estimating the used gas.
+func (rpc *EthRPC) EthEstimateGas(transaction *T) (int, error) {
+	var response string
+
+	err := rpc.call("eth_estimateGas", &response, transaction)
+	if err != nil {
+		return 0, nil
+	}
+
+	return ParseInt(response)
+}
+
 // EthGetCompilers returns a list of available compilers in the client.
 func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 	compilers := []string{}
