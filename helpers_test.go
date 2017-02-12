@@ -1,6 +1,7 @@
 package ethrpc
 
 import (
+	"math/big"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,4 +32,17 @@ func TestParseBigInt(t *testing.T) {
 
 	i, err = ParseBigInt("$%1")
 	assert.NotNil(t, err)
+}
+
+func TestIntToHex(t *testing.T) {
+	assert.Equal(t, "0xde0b6b3a7640000", IntToHex(1000000000000000000))
+	assert.Equal(t, "0x6f", IntToHex(111))
+}
+
+func TestBigToHex(t *testing.T) {
+	i1, _ := big.NewInt(0).SetString("1000000000000000000", 10)
+	assert.Equal(t, "0xde0b6b3a7640000", BigToHex(*i1))
+
+	i2, _ := big.NewInt(0).SetString("100000000000000000000", 10)
+	assert.Equal(t, "0x56bc75e2d63100000", BigToHex(*i2))
 }

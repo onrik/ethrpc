@@ -271,6 +271,38 @@ func (rpc *EthRPC) EthGetUncleCountByBlockNumber(number int) (int, error) {
 	return ParseInt(response)
 }
 
+// EthGetCode returns code at a given address.
+func (rpc *EthRPC) EthGetCode(address, block string) (string, error) {
+	var code string
+
+	err := rpc.call("eth_getCode", &code, address, block)
+	return code, err
+}
+
+// EthSign signs data with a given address.
+func (rpc *EthRPC) EthSign(address, data string) (string, error) {
+	var signature string
+
+	err := rpc.call("eth_sign", &signature, address, data)
+	return signature, err
+}
+
+// EthSendTransaction creates new message call transaction or a contract creation, if the data field contains code.
+func (rpc *EthRPC) EthSendTransaction(transaction *T) (string, error) {
+	var hash string
+
+	err := rpc.call("eth_sendTransaction", &hash, transaction)
+	return hash, err
+}
+
+// EthSendRawTransaction creates new message call transaction or a contract creation for signed transactions.
+func (rpc *EthRPC) EthSendRawTransaction(data string) (string, error) {
+	var hash string
+
+	err := rpc.call("eth_sendRawTransaction", &hash, data)
+	return hash, err
+}
+
 // EthGetCompilers returns a list of available compilers in the client.
 func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 	compilers := []string{}

@@ -17,10 +17,20 @@ func ParseInt(value string) (int, error) {
 	return int(i), nil
 }
 
-// ParseBigInt parse hex string value to bin.Int
+// ParseBigInt parse hex string value to big.Int
 func ParseBigInt(value string) (big.Int, error) {
 	i := big.Int{}
 	_, err := fmt.Sscan(value, &i)
 
 	return i, err
+}
+
+// IntToHex convert int to hexadecimal representation
+func IntToHex(i int) string {
+	return fmt.Sprintf("0x%x", i)
+}
+
+// BigToHex covert big.Int to hexadecimal representation
+func BigToHex(bigInt big.Int) string {
+	return "0x" + strings.TrimPrefix(fmt.Sprintf("%x", bigInt.Bytes()), "0")
 }
