@@ -317,7 +317,7 @@ func (rpc *EthRPC) EthEstimateGas(transaction *T) (int, error) {
 
 	err := rpc.call("eth_estimateGas", &response, transaction)
 	if err != nil {
-		return 0, nil
+		return 0, err
 	}
 
 	return ParseInt(response)
