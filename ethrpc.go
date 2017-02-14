@@ -323,6 +323,19 @@ func (rpc *EthRPC) EthEstimateGas(transaction *T) (int, error) {
 	return ParseInt(response)
 }
 
+// EthGetTransactionReceipt returns the receipt of a transaction by transaction hash.
+// Note That the receipt is not available for pending transactions.
+func (rpc *EthRPC) EthGetTransactionReceipt(hash string) (*TransactionReceipt, error) {
+	transactionReceipt := new(TransactionReceipt)
+
+	err := rpc.call("eth_getTransactionReceipt", &transactionReceipt, hash)
+	if err != nil {
+		return nil, err
+	}
+
+	return transactionReceipt, nil
+}
+
 // EthGetCompilers returns a list of available compilers in the client.
 func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 	compilers := []string{}
