@@ -323,6 +323,42 @@ func (rpc *EthRPC) EthEstimateGas(transaction *T) (int, error) {
 	return ParseInt(response)
 }
 
+// EthGetTransactionByHash returns the information about a transaction requested by transaction hash.
+func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
+	transaction := new(Transaction)
+
+	err := rpc.call("eth_getTransactionByHash", &transaction, hash)
+	if err != nil {
+		return nil, err
+	}
+
+	return transaction, nil
+}
+
+// EthGetTransactionByBlockHashAndIndex returns information about a transaction by block hash and transaction index position.
+func (rpc *EthRPC) EthGetTransactionByBlockHashAndIndex(blockHash string, transactionIndex int) (*Transaction, error) {
+	transaction := new(Transaction)
+
+	err := rpc.call("eth_getTransactionByBlockHashAndIndex", &transaction, blockHash, IntToHex(transactionIndex))
+	if err != nil {
+		return nil, err
+	}
+
+	return transaction, nil
+}
+
+// EthGetTransactionByBlockNumberAndIndex returns information about a transaction by block number and transaction index position.
+func (rpc *EthRPC) EthGetTransactionByBlockNumberAndIndex(blockNumber, transactionIndex int) (*Transaction, error) {
+	transaction := new(Transaction)
+
+	err := rpc.call("eth_getTransactionByBlockNumberAndIndex", &transaction, IntToHex(blockNumber), IntToHex(transactionIndex))
+	if err != nil {
+		return nil, err
+	}
+
+	return transaction, nil
+}
+
 // EthGetTransactionReceipt returns the receipt of a transaction by transaction hash.
 // Note That the receipt is not available for pending transactions.
 func (rpc *EthRPC) EthGetTransactionReceipt(hash string) (*TransactionReceipt, error) {

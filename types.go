@@ -44,6 +44,32 @@ func (t *T) MarshalJSON() ([]byte, error) {
 	return json.Marshal(params)
 }
 
+// Transaction - transaction object
+type Transaction struct {
+	Hash             string
+	Nonce            int
+	BlockHash        string
+	BlockNumber      *int
+	TransactionIndex *int
+	From             string
+	To               string
+	Value            big.Int
+	Gas              int
+	GasPrice         big.Int
+	Input            string
+}
+
+func (t *Transaction) UnmarshalJSON(data []byte) error {
+	proxy := new(proxyTransaction)
+	if err := json.Unmarshal(data, proxy); err != nil {
+		return err
+	}
+
+	*t = *(*Transaction)(unsafe.Pointer(proxy))
+
+	return nil
+}
+
 // Log - log object
 type Log struct {
 	Removed          bool
@@ -91,6 +117,20 @@ func (t *TransactionReceipt) UnmarshalJSON(data []byte) error {
 	*t = *(*TransactionReceipt)(unsafe.Pointer(proxy))
 
 	return nil
+}
+
+type proxyTransaction struct {
+	Hash             string  `json:"hash"`
+	Nonce            hexInt  `json:"nonce"`
+	BlockHash        string  `json:"blockHash"`
+	BlockNumber      *hexInt `json:"blockNumber"`
+	TransactionIndex *hexInt `json:"transactionIndex"`
+	From             string  `json:"from"`
+	To               string  `json:"to"`
+	Value            hexBig  `json:"value"`
+	Gas              hexInt  `json:"gas"`
+	GasPrice         hexBig  `json:"gasPrice"`
+	Input            string  `json:"input"`
 }
 
 type proxyLog struct {
