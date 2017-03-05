@@ -7,6 +7,25 @@ import (
 	"unsafe"
 )
 
+type Syncing struct {
+	IsSyncing     bool
+	StartingBlock int
+	CurrentBlock  int
+	HighestBlock  int
+}
+
+func (s *Syncing) UnmarshalJSON(data []byte) error {
+	proxy := new(proxySyncing)
+	if err := json.Unmarshal(data, proxy); err != nil {
+		return err
+	}
+
+	proxy.IsSyncing = true
+	*s = *(*Syncing)(unsafe.Pointer(proxy))
+
+	return nil
+}
+
 // T - input transaction object
 type T struct {
 	From     string
@@ -117,6 +136,13 @@ func (t *TransactionReceipt) UnmarshalJSON(data []byte) error {
 	*t = *(*TransactionReceipt)(unsafe.Pointer(proxy))
 
 	return nil
+}
+
+type proxySyncing struct {
+	IsSyncing     bool   `json:"-"`
+	StartingBlock hexInt `json:"startingBlock"`
+	CurrentBlock  hexInt `json:"currentBlock"`
+	HighestBlock  hexInt `json:"highestBlock"`
 }
 
 type proxyTransaction struct {

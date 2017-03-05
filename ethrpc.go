@@ -45,6 +45,24 @@ func NewEthRPC(url string) *EthRPC {
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
+	result, err := rpc.RawCall(method, params...)
+	if err != nil {
+		return err
+	}
+
+	if target == nil {
+		return nil
+	}
+
+	if err := json.Unmarshal(result, target); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// RawCall returns raw response of method call
+func (rpc *EthRPC) RawCall(method string, params ...interface{}) (json.RawMessage, error) {
 	request := ethRequest{
 		ID:      1,
 		JSONRPC: "2.0",
@@ -54,7 +72,7 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 
 	body, err := json.Marshal(request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	response, err := http.Post(rpc.url, "application/json", bytes.NewBuffer(body))
@@ -62,12 +80,12 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 		defer response.Body.Close()
 	}
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	data, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if rpc.Debug {
@@ -76,22 +94,15 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 
 	resp := new(ethResponse)
 	if err := json.Unmarshal(data, resp); err != nil {
-		return err
+		return nil, err
 	}
 
 	if resp.Error != nil {
-		return resp.Error
+		return nil, resp.Error
 	}
 
-	if target == nil {
-		return nil
-	}
+	return resp.Result, nil
 
-	if err := json.Unmarshal(resp.Result, target); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // Web3ClientVersion returns the current client version.
@@ -145,11 +156,18 @@ func (rpc *EthRPC) EthProtocolVersion() (string, error) {
 }
 
 // EthSyncing returns an object with data about the sync status or false.
-// func (rpc *EthRPC) EthSyncing() (bool, error) {
-
-// 	err := rpc.call("eth_syncing",)
-// 	return syncing, err
-// }
+func (rpc *EthRPC) EthSyncing() (*Syncing, error) {
+	result, err := rpc.RawCall("eth_syncing")
+	if err != nil {
+		return nil, err
+	}
+	syncing := new(Syncing)
+	if bytes.Equal(result, []byte("false")) {
+		return syncing, nil
+	}
+	err = json.Unmarshal(result, syncing)
+	return syncing, err
+}
 
 // EthCoinbase returns the client coinbase address
 func (rpc *EthRPC) EthCoinbase() (string, error) {
