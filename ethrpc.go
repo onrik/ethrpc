@@ -346,7 +346,7 @@ func (rpc *EthRPC) EthEstimateGas(transaction *T) (int, error) {
 func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
 	transaction := new(Transaction)
 
-	err := rpc.call("eth_getTransactionByHash", &transaction, hash)
+	err := rpc.call("eth_getTransactionByHash", transaction, hash)
 	if err != nil {
 		return nil, err
 	}
@@ -358,7 +358,7 @@ func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
 func (rpc *EthRPC) EthGetTransactionByBlockHashAndIndex(blockHash string, transactionIndex int) (*Transaction, error) {
 	transaction := new(Transaction)
 
-	err := rpc.call("eth_getTransactionByBlockHashAndIndex", &transaction, blockHash, IntToHex(transactionIndex))
+	err := rpc.call("eth_getTransactionByBlockHashAndIndex", transaction, blockHash, IntToHex(transactionIndex))
 	if err != nil {
 		return nil, err
 	}
@@ -370,7 +370,7 @@ func (rpc *EthRPC) EthGetTransactionByBlockHashAndIndex(blockHash string, transa
 func (rpc *EthRPC) EthGetTransactionByBlockNumberAndIndex(blockNumber, transactionIndex int) (*Transaction, error) {
 	transaction := new(Transaction)
 
-	err := rpc.call("eth_getTransactionByBlockNumberAndIndex", &transaction, IntToHex(blockNumber), IntToHex(transactionIndex))
+	err := rpc.call("eth_getTransactionByBlockNumberAndIndex", transaction, IntToHex(blockNumber), IntToHex(transactionIndex))
 	if err != nil {
 		return nil, err
 	}
@@ -383,7 +383,7 @@ func (rpc *EthRPC) EthGetTransactionByBlockNumberAndIndex(blockNumber, transacti
 func (rpc *EthRPC) EthGetTransactionReceipt(hash string) (*TransactionReceipt, error) {
 	transactionReceipt := new(TransactionReceipt)
 
-	err := rpc.call("eth_getTransactionReceipt", &transactionReceipt, hash)
+	err := rpc.call("eth_getTransactionReceipt", transactionReceipt, hash)
 	if err != nil {
 		return nil, err
 	}
