@@ -10,12 +10,13 @@ import (
 	"net/http"
 )
 
-type ethError struct {
+// EthError - ethereum error
+type EthError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
-func (err ethError) Error() string {
+func (err EthError) Error() string {
 	return fmt.Sprintf("Error %d (%s)", err.Code, err.Message)
 }
 
@@ -23,7 +24,7 @@ type ethResponse struct {
 	ID      int             `json:"id"`
 	JSONRPC string          `json:"jsonrpc"`
 	Result  json.RawMessage `json:"result"`
-	Error   *ethError       `json:"error"`
+	Error   *EthError       `json:"error"`
 }
 
 type ethRequest struct {
@@ -98,7 +99,7 @@ func (rpc *EthRPC) RawCall(method string, params ...interface{}) (json.RawMessag
 	}
 
 	if resp.Error != nil {
-		return nil, resp.Error
+		return nil, *resp.Error
 	}
 
 	return resp.Result, nil
@@ -306,7 +307,7 @@ func (rpc *EthRPC) EthSign(address, data string) (string, error) {
 }
 
 // EthSendTransaction creates new message call transaction or a contract creation, if the data field contains code.
-func (rpc *EthRPC) EthSendTransaction(transaction *T) (string, error) {
+func (rpc *EthRPC) EthSendTransaction(transaction T) (string, error) {
 	var hash string
 
 	err := rpc.call("eth_sendTransaction", &hash, transaction)
