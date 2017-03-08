@@ -37,7 +37,7 @@ type T struct {
 	Nonce    int
 }
 
-func (t *T) MarshalJSON() ([]byte, error) {
+func (t T) MarshalJSON() ([]byte, error) {
 	params := map[string]interface{}{
 		"from": t.From,
 	}
