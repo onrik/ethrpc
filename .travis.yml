@@ -1,13 +1,14 @@
 language: go
 
 go:
-  - 1.6
+  - 1.7
   - tip
 
 before_install:
   - go get golang.org/x/tools/cmd/cover
   - go get github.com/mattn/goveralls
   - go get github.com/stretchr/testify
+  - go get github.com/tidwall/gjson
   
 after_success:
   - goveralls -service=travis-ci
