@@ -261,7 +261,7 @@ func (rpc *EthRPC) EthGetBlockTransactionCountByHash(hash string) (int, error) {
 func (rpc *EthRPC) EthGetBlockTransactionCountByNumber(number int) (int, error) {
 	var response string
 
-	if err := rpc.call("eth_getBlockTransactionCountByNumber", &response, fmt.Sprintf("0x%x", number)); err != nil {
+	if err := rpc.call("eth_getBlockTransactionCountByNumber", &response, IntToHex(number)); err != nil {
 		return 0, err
 	}
 
@@ -283,7 +283,7 @@ func (rpc *EthRPC) EthGetUncleCountByBlockHash(hash string) (int, error) {
 func (rpc *EthRPC) EthGetUncleCountByBlockNumber(number int) (int, error) {
 	var response string
 
-	if err := rpc.call("eth_getUncleCountByBlockNumber", &response, fmt.Sprintf("0x%x", number)); err != nil {
+	if err := rpc.call("eth_getUncleCountByBlockNumber", &response, IntToHex(number)); err != nil {
 		return 0, err
 	}
 
@@ -299,6 +299,7 @@ func (rpc *EthRPC) EthGetCode(address, block string) (string, error) {
 }
 
 // EthSign signs data with a given address.
+// Calculates an Ethereum specific signature with: sign(keccak256("\x19Ethereum Signed Message:\n" + len(message) + message)))
 func (rpc *EthRPC) EthSign(address, data string) (string, error) {
 	var signature string
 

@@ -293,9 +293,82 @@ func (s *EthRPCTestSuite) TestEthGetTransactionCount() {
 	s.Require().Equal(16, count)
 }
 
-func (s *EthRPCTestSuite) TestSendTransaction() {
-	response := `{"jsonrpc":"2.0", "id":1, "result": "0xea1115eb5"}`
+func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByHash() {
+	hash := "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"
+	s.registerResponse(`"0xb"`, func(body []byte) {
+		s.methodEqual(body, "eth_getBlockTransactionCountByHash")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, hash))
+	})
 
+	count, err := s.rpc.EthGetBlockTransactionCountByHash(hash)
+	s.Require().Nil(err)
+	s.Require().Equal(11, count)
+}
+
+func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByNumber() {
+	number := 2384732
+	s.registerResponse(`"0xe8"`, func(body []byte) {
+		s.methodEqual(body, "eth_getBlockTransactionCountByNumber")
+		s.paramsEqual(body, `["0x24635c"]`)
+	})
+
+	count, err := s.rpc.EthGetBlockTransactionCountByNumber(number)
+	s.Require().Nil(err)
+	s.Require().Equal(232, count)
+}
+
+func (s *EthRPCTestSuite) TestEthGetUncleCountByBlockHash() {
+	hash := "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"
+	s.registerResponse(`"0xa"`, func(body []byte) {
+		s.methodEqual(body, "eth_getUncleCountByBlockHash")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, hash))
+	})
+
+	count, err := s.rpc.EthGetUncleCountByBlockHash(hash)
+	s.Require().Nil(err)
+	s.Require().Equal(10, count)
+}
+
+func (s *EthRPCTestSuite) TestEthGetUncleCountByBlockNumber() {
+	number := 3987434
+	s.registerResponse(`"0x386"`, func(body []byte) {
+		s.methodEqual(body, "eth_getUncleCountByBlockNumber")
+		s.paramsEqual(body, `["0x3cd7ea"]`)
+	})
+
+	count, err := s.rpc.EthGetUncleCountByBlockNumber(number)
+	s.Require().Nil(err)
+	s.Require().Equal(902, count)
+}
+
+func (s *EthRPCTestSuite) TestEthGetCode() {
+	address := "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b"
+	result := "0x600160008035811a818181146012578301005b601b6001356025565b8060005260206000f25b600060078202905091905056"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_getCode")
+		s.paramsEqual(body, fmt.Sprintf(`["%s", "latest"]`, address))
+	})
+
+	code, err := s.rpc.EthGetCode(address, "latest")
+	s.Require().Nil(err)
+	s.Require().Equal(result, code)
+}
+
+func (s *EthRPCTestSuite) TestEthSign() {
+	address := "0x9b2055d370f73ec7d8a03e965129118dc8f5bf83"
+	data := "0xdeadbeaf"
+	result := "0xa3f20717a250c2b0b729b7e5becbff67fdaef7e0699da4de7ca5895b02a170a12d887fd3b17bfdce3481f10bea41f45ba9f709d39ce8325427b57afcfc994cee1b"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_sign")
+		s.paramsEqual(body, fmt.Sprintf(`["%s", "%s"]`, address, data))
+	})
+
+	signed, err := s.rpc.EthSign(address, data)
+	s.Require().Nil(err)
+	s.Require().Equal(result, signed)
+}
+
+func (s *EthRPCTestSuite) TestSendTransaction() {
 	t := T{
 		From:     "0x3cc1a3c082944b9dba70e490e481dd56",
 		To:       "0x1bf21cb1dc384d019a885a06973f7308",
@@ -306,8 +379,8 @@ func (s *EthRPCTestSuite) TestSendTransaction() {
 		Nonce:    98384,
 	}
 
-	httpmock.RegisterResponder("POST", s.rpc.url, func(request *http.Request) (*http.Response, error) {
-		body := s.getBody(request)
+	result := "0xea1115eb5"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_sendTransaction")
 		s.paramsEqual(body, `[{
 			"from": "0x3cc1a3c082944b9dba70e490e481dd56",
@@ -318,30 +391,50 @@ func (s *EthRPCTestSuite) TestSendTransaction() {
 			"data": "some data",
 			"nonce": "0x18050"
 		}]`)
-
-		return httpmock.NewStringResponse(200, response), nil
 	})
 
 	txid, err := s.rpc.EthSendTransaction(t)
 	s.Require().Nil(err)
-	s.Require().Equal("0xea1115eb5", txid)
-
-	httpmock.Reset()
+	s.Require().Equal(result, txid)
 
 	t = T{}
-	httpmock.RegisterResponder("POST", s.rpc.url, func(request *http.Request) (*http.Response, error) {
-		body := s.getBody(request)
+	httpmock.Reset()
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_sendTransaction")
 		s.paramsEqual(body, `[{
 			"from": ""
 		}]`)
 
-		return httpmock.NewStringResponse(200, response), nil
 	})
 
 	txid, err = s.rpc.EthSendTransaction(t)
 	s.Require().Nil(err)
-	s.Require().Equal("0xea1115eb5", txid)
+	s.Require().Equal(result, txid)
+}
+
+func (s *EthRPCTestSuite) TestEthSendRawTransaction() {
+	data := "0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675"
+	result := "0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_sendRawTransaction")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, data))
+	})
+
+	txid, err := s.rpc.EthSendRawTransaction(data)
+	s.Require().Nil(err)
+	s.Require().Equal(result, txid)
+}
+
+func (s *EthRPCTestSuite) TestEthGetCompilers() {
+	s.registerResponse(`["solidity", "some comp"]`, func(body []byte) {
+		s.methodEqual(body, "eth_getCompilers")
+		s.paramsEqual(body, "null")
+	})
+
+	compilers, err := s.rpc.EthGetCompilers()
+	s.Require().Nil(err)
+	s.Require().Equal([]string{"solidity", "some comp"}, compilers)
+
 }
 
 func TestEthRPCTestSuite(t *testing.T) {
