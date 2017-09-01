@@ -425,3 +425,12 @@ func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 	err := rpc.call("eth_getCompilers", &compilers)
 	return compilers, err
 }
+
+
+// EthNewFilter creates a new filter object.
+// func (rpc *EthRPC) EthNewFilter(fromBlock string, toBlock string, address string, topics []string) (string, error){
+func (rpc *EthRPC) EthNewFilter(params map[string]interface{}) (string, error){
+        var filterId string
+        err := rpc.call("eth_newFilter", &filterId, params)
+        return filterId, err
+}
