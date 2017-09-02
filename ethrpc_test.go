@@ -944,12 +944,12 @@ func (s *EthRPCTestSuite) TestEthGetTransactionByBlockNumberAndIndex() {
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
-        address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
-        data := map[string]interface{}{"address": "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
+	address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
+	data := map[string]interface{}{"address": "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
-                s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s"}]`, address))
+		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s"}]`, address))
 	})
 
 	filterId, err := s.rpc.EthNewFilter(data)
@@ -958,12 +958,12 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
-        topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
-        data := map[string]interface{}{"topics": topics}
+	topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
+	data := map[string]interface{}{"topics": topics}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
-                s.paramsEqual(body, fmt.Sprintf(`[{"topics": ["%s", "%s"]}]`, topics[0], topics[1]))
+		s.paramsEqual(body, fmt.Sprintf(`[{"topics": ["%s", "%s"]}]`, topics[0], topics[1]))
 	})
 
 	filterId, err := s.rpc.EthNewFilter(data)
@@ -972,13 +972,13 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
-        topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
-        address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
-        data := map[string]interface{}{"address": address, "topics": topics}
+	topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
+	address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
+	data := map[string]interface{}{"address": address, "topics": topics}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
-                s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s", "topics": ["%s", "%s"]}]`, address, topics[0], topics[1]))
+		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s", "topics": ["%s", "%s"]}]`, address, topics[0], topics[1]))
 	})
 
 	filterId, err := s.rpc.EthNewFilter(data)
