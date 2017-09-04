@@ -992,12 +992,12 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	filterId := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := []interface{}{
 		map[string]interface{}{
-			"address": "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
-			"blockHash": "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+			"address":     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+			"blockHash":   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			"blockNumber": "0xc8fc2",
-			"data": "0x000000000000000000000000000000000000000000000000000000112c905320",
-			"logIndex": "0x0",
-			"removed": "false",
+			"data":        "0x000000000000000000000000000000000000000000000000000000112c905320",
+			"logIndex":    "0x0",
+			"removed":     "false",
 			"topics": []interface{}{
 				"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160",
 			},

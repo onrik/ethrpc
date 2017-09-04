@@ -59,7 +59,6 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 		return err
 	}
 
-
 	return nil
 }
 
