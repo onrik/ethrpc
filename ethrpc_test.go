@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -1010,6 +1011,20 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	logs, err := s.rpc.EthGetFilterChanges(filterId)
 	s.Require().Nil(err)
 	s.Require().Equal(result, logs)
+}
+
+func (s *EthRPCTestSuite) TestEthUninstallFilter() {
+	filterId := "0x6996a3a4788d4f2067108d1f536d4330"
+	result := "true"
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_uninstallFilter")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterId))
+	})
+
+	uninstall, err := s.rpc.EthUninstallFilter(filterId)
+	s.Require().Nil(err)
+	boolRes, _ := strconv.ParseBool(result)
+	s.Require().Equal(boolRes, uninstall)
 }
 
 func TestEthRPCTestSuite(t *testing.T) {

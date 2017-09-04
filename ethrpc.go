@@ -440,3 +440,10 @@ func (rpc *EthRPC) EthGetFilterChanges(filterId string) ([]interface{}, error) {
 	err := rpc.call("eth_getFilterChanges", &logs, filterId)
 	return logs, err
 }
+
+// EthUninstallFilter Uninstalls a filter with given id.
+func (rpc *EthRPC) EthUninstallFilter(filterId string) (bool, error) {
+	var res bool
+	err := rpc.call("eth_uninstallFilter", &res, filterId)
+	return res, err
+}
