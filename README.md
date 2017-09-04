@@ -48,7 +48,7 @@ Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/
 - [ ] eth_newBlockFilter
 - [ ] eth_newPendingTransactionFilter
 - [ ] eth_uninstallFilter
-- [ ] eth_getFilterChanges
+- [x] eth_getFilterChanges
 - [ ] eth_getFilterLogs
 - [ ] eth_getLogs
 - [ ] eth_getWork
