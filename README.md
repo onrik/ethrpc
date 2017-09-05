@@ -19,7 +19,7 @@ Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/
 - [x] eth_accounts
 - [x] eth_blockNumber
 - [x] eth_getBalance
-- [ ] eth_getStorageAt
+- [x] eth_getStorageAt
 - [x] eth_getTransactionCount
 - [x] eth_getBlockTransactionCountByHash
 - [x] eth_getBlockTransactionCountByNumber

@@ -235,6 +235,14 @@ func (rpc *EthRPC) EthGetBalance(address, block string) (big.Int, error) {
 	return ParseBigInt(response)
 }
 
+// EthGetStorageAt returns the value from a storage position at a given address.
+func (rpc *EthRPC) EthGetStorageAt(data string, position int, tag string) (string, error) {
+	var result string
+
+	err := rpc.call("eth_getStorageAt", &result, data, IntToHex(position), tag)
+	return result, err
+}
+
 // EthGetTransactionCount returns the number of transactions sent from an address.
 func (rpc *EthRPC) EthGetTransactionCount(address, block string) (int, error) {
 	var response string

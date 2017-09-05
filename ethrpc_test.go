@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/jarcoal/httpmock"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"github.com/tidwall/gjson"
 )
@@ -281,6 +282,21 @@ func (s *EthRPCTestSuite) TestEthGetBalance() {
 	s.Require().Equal(*expected, balance)
 }
 
+func (s *EthRPCTestSuite) TestEthGetStorageAt() {
+	data := "0x295a70b2de5e3953354a6a8344e616ed314d7251"
+	position := 33
+	tag := "pending"
+
+	s.registerResponse(`"0x00000000000000000000000000000000000000000000000000000000000004d2"`, func(body []byte) {
+		s.methodEqual(body, "eth_getStorageAt")
+		s.paramsEqual(body, fmt.Sprintf(`["%s", "0x21", "pending"]`, data))
+	})
+
+	result, err := s.rpc.EthGetStorageAt(data, position, tag)
+	s.Require().Nil(err)
+	s.Require().Equal("0x00000000000000000000000000000000000000000000000000000000000004d2", result)
+}
+
 func (s *EthRPCTestSuite) TestEthGetTransactionCount() {
 	address := "0x407d73d8a49eeb85d32cf465507dd71d507100c1"
 	s.registerResponse(`"0x10"`, func(body []byte) {
@@ -439,4 +455,13 @@ func (s *EthRPCTestSuite) TestEthGetCompilers() {
 
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
+}
+
+func TestEthError(t *testing.T) {
+	var err error
+	err = EthError{-32555, "Messg"}
+	require.Equal(t, "Error -32555 (Messg)", err.Error())
+
+	err = EthError{32847, "Kuku"}
+	require.Equal(t, "Error 32847 (Kuku)", err.Error())
 }
