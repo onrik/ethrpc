@@ -954,9 +954,9 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
 		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s"}]`, address))
 	})
 
-	filterId, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(data)
 	s.Require().Nil(err)
-	s.Require().Equal(result, filterId)
+	s.Require().Equal(result, filterID)
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
@@ -968,9 +968,9 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 		s.paramsEqual(body, fmt.Sprintf(`[{"topics": ["%s", "%s"]}]`, topics[0], topics[1]))
 	})
 
-	filterId, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(data)
 	s.Require().Nil(err)
-	s.Require().Equal(result, filterId)
+	s.Require().Equal(result, filterID)
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
@@ -983,13 +983,13 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s", "topics": ["%s", "%s"]}]`, address, topics[0], topics[1]))
 	})
 
-	filterId, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(data)
 	s.Require().Nil(err)
-	s.Require().Equal(result, filterId)
+	s.Require().Equal(result, filterID)
 }
 
 func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
-	filterId := "0x6996a3a4788d4f2067108d1f536d4330"
+	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := []interface{}{
 		map[string]interface{}{
 			"address":     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
@@ -1005,23 +1005,23 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	json_result, _ := json.Marshal(result)
 	s.registerResponse(string(json_result), func(body []byte) {
 		s.methodEqual(body, "eth_getFilterChanges")
-		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterId))
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
 	})
 
-	logs, err := s.rpc.EthGetFilterChanges(filterId)
+	logs, err := s.rpc.EthGetFilterChanges(filterID)
 	s.Require().Nil(err)
 	s.Require().Equal(result, logs)
 }
 
 func (s *EthRPCTestSuite) TestEthUninstallFilter() {
-	filterId := "0x6996a3a4788d4f2067108d1f536d4330"
+	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := "true"
 	s.registerResponse(result, func(body []byte) {
 		s.methodEqual(body, "eth_uninstallFilter")
-		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterId))
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
 	})
 
-	uninstall, err := s.rpc.EthUninstallFilter(filterId)
+	uninstall, err := s.rpc.EthUninstallFilter(filterID)
 	s.Require().Nil(err)
 	boolRes, _ := strconv.ParseBool(result)
 	s.Require().Equal(boolRes, uninstall)
