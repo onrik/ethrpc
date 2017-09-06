@@ -1,5 +1,6 @@
 # Ethrpc
 [![Build Status](https://travis-ci.org/onrik/ethrpc.svg?branch=master)](https://travis-ci.org/onrik/ethrpc)
+[![Coverage Status](https://coveralls.io/repos/github/onrik/ethrpc/badge.svg?branch=master)](https://coveralls.io/github/onrik/ethrpc?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/onrik/ethrpc)](https://goreportcard.com/report/github.com/onrik/ethrpc)
 [![GoDoc](https://godoc.org/github.com/onrik/ethrpc?status.svg)](https://godoc.org/github.com/onrik/ethrpc)
 
