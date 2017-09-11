@@ -32,8 +32,8 @@ Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/
 - [x] eth_sendRawTransaction
 - [x] eth_call
 - [x] eth_estimateGas
-- [ ] eth_getBlockByHash
-- [ ] eth_getBlockByNumber
+- [x] eth_getBlockByHash
+- [x] eth_getBlockByNumber
 - [x] eth_getTransactionByHash
 - [x] eth_getTransactionByBlockHashAndIndex
 - [x] eth_getTransactionByBlockNumberAndIndex

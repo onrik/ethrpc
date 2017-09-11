@@ -351,6 +351,33 @@ func (rpc *EthRPC) EthEstimateGas(transaction T) (int, error) {
 	return ParseInt(response)
 }
 
+func (rpc *EthRPC) getBlock(method string, withTransactions bool, params ...interface{}) (*Block, error) {
+	var response proxyBlock
+	if withTransactions {
+		response = new(proxyBlockWithTransactions)
+	} else {
+		response = new(proxyBlockWithoutTransactions)
+	}
+
+	err := rpc.call(method, response, params...)
+	if err != nil {
+		return nil, err
+	}
+	block := response.toBlock()
+
+	return &block, nil
+}
+
+// EthGetBlockByHash returns information about a block by hash.
+func (rpc *EthRPC) EthGetBlockByHash(hash string, withTransactions bool) (*Block, error) {
+	return rpc.getBlock("eth_getBlockByHash", withTransactions, hash, withTransactions)
+}
+
+// EthGetBlockByNumber returns information about a block by block number.
+func (rpc *EthRPC) EthGetBlockByNumber(number int, withTransactions bool) (*Block, error) {
+	return rpc.getBlock("eth_getBlockByNumber", withTransactions, IntToHex(number), withTransactions)
+}
+
 // EthGetTransactionByHash returns the information about a transaction requested by transaction hash.
 func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
 	transaction := new(Transaction)
