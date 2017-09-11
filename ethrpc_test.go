@@ -756,6 +756,73 @@ func (s *EthRPCTestSuite) TestEthGetTransactionReceipt() {
 	}, receipt.Logs[0])
 }
 
+func (s *EthRPCTestSuite) TestGetTransaction() {
+	result := `{
+        "blockHash": "0x8b0404b2e5173e7abdbfc98f521d50808486ccaff3cd0a6344e0bb6c7aa8cef0",
+        "blockNumber": "0x4109ed",
+        "from": "0xe3a7ca9d2306b0dc900ea618648bed9ec6cb1106",
+        "gas": "0x3d090",
+        "gasPrice": "0xee6b2800",
+        "hash": "0x3068bb24a6c65a80eb350b89b2ef2f4d0605f59e5d07fd3467eb76511c4408e7",
+        "input": "0x522",
+        "nonce": "0xa8",
+        "to": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+        "transactionIndex": "0x98",
+        "value": "0x9184e72a000"
+    }`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "ggg")
+	})
+
+	transaction, err := s.rpc.getTransaction("ggg")
+	s.Require().Nil(err)
+	s.Require().NotNil(transaction)
+	s.Require().Equal("0x3068bb24a6c65a80eb350b89b2ef2f4d0605f59e5d07fd3467eb76511c4408e7", transaction.Hash)
+	s.Require().Equal(168, transaction.Nonce)
+	s.Require().Equal("0x8b0404b2e5173e7abdbfc98f521d50808486ccaff3cd0a6344e0bb6c7aa8cef0", transaction.BlockHash)
+	s.Require().Equal(4262381, *transaction.BlockNumber)
+	s.Require().Equal(152, *transaction.TransactionIndex)
+	s.Require().Equal("0xe3a7ca9d2306b0dc900ea618648bed9ec6cb1106", transaction.From)
+	s.Require().Equal("0x8d12a197cb00d4747a1fe03395095ce2a5cc6819", transaction.To)
+	s.Require().Equal(newBigInt("10000000000000"), transaction.Value)
+	s.Require().Equal(250000, transaction.Gas)
+	s.Require().Equal(newBigInt("4000000000"), transaction.GasPrice)
+	s.Require().Equal("0x522", transaction.Input)
+}
+
+func (s *EthRPCTestSuite) TestEthGetTransactionByHash() {
+	s.registerResponse(`{}`, func(body []byte) {
+		s.methodEqual(body, "eth_getTransactionByHash")
+		s.paramsEqual(body, `["0x123"]`)
+	})
+
+	t, err := s.rpc.EthGetTransactionByHash("0x123")
+	s.Require().Nil(err)
+	s.Require().NotNil(t)
+}
+
+func (s *EthRPCTestSuite) TestEthGetTransactionByBlockHashAndIndex() {
+	s.registerResponse(`{}`, func(body []byte) {
+		s.methodEqual(body, "eth_getTransactionByBlockHashAndIndex")
+		s.paramsEqual(body, `["0x623", "0x12"]`)
+	})
+
+	t, err := s.rpc.EthGetTransactionByBlockHashAndIndex("0x623", 18)
+	s.Require().Nil(err)
+	s.Require().NotNil(t)
+}
+
+func (s *EthRPCTestSuite) TestEthGetTransactionByBlockNumberAndIndex() {
+	s.registerResponse(`{}`, func(body []byte) {
+		s.methodEqual(body, "eth_getTransactionByBlockNumberAndIndex")
+		s.paramsEqual(body, `["0x1f537da", "0xa"]`)
+	})
+
+	t, err := s.rpc.EthGetTransactionByBlockNumberAndIndex(32847834, 10)
+	s.Require().Nil(err)
+	s.Require().NotNil(t)
+}
+
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
 }

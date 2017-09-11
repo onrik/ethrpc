@@ -378,40 +378,26 @@ func (rpc *EthRPC) EthGetBlockByNumber(number int, withTransactions bool) (*Bloc
 	return rpc.getBlock("eth_getBlockByNumber", withTransactions, IntToHex(number), withTransactions)
 }
 
-// EthGetTransactionByHash returns the information about a transaction requested by transaction hash.
-func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
+func (rpc *EthRPC) getTransaction(method string, params ...interface{}) (*Transaction, error) {
 	transaction := new(Transaction)
 
-	err := rpc.call("eth_getTransactionByHash", transaction, hash)
-	if err != nil {
-		return nil, err
-	}
+	err := rpc.call(method, transaction, params...)
+	return transaction, err
+}
 
-	return transaction, nil
+// EthGetTransactionByHash returns the information about a transaction requested by transaction hash.
+func (rpc *EthRPC) EthGetTransactionByHash(hash string) (*Transaction, error) {
+	return rpc.getTransaction("eth_getTransactionByHash", hash)
 }
 
 // EthGetTransactionByBlockHashAndIndex returns information about a transaction by block hash and transaction index position.
 func (rpc *EthRPC) EthGetTransactionByBlockHashAndIndex(blockHash string, transactionIndex int) (*Transaction, error) {
-	transaction := new(Transaction)
-
-	err := rpc.call("eth_getTransactionByBlockHashAndIndex", transaction, blockHash, IntToHex(transactionIndex))
-	if err != nil {
-		return nil, err
-	}
-
-	return transaction, nil
+	return rpc.getTransaction("eth_getTransactionByBlockHashAndIndex", blockHash, IntToHex(transactionIndex))
 }
 
 // EthGetTransactionByBlockNumberAndIndex returns information about a transaction by block number and transaction index position.
 func (rpc *EthRPC) EthGetTransactionByBlockNumberAndIndex(blockNumber, transactionIndex int) (*Transaction, error) {
-	transaction := new(Transaction)
-
-	err := rpc.call("eth_getTransactionByBlockNumberAndIndex", transaction, IntToHex(blockNumber), IntToHex(transactionIndex))
-	if err != nil {
-		return nil, err
-	}
-
-	return transaction, nil
+	return rpc.getTransaction("eth_getTransactionByBlockNumberAndIndex", IntToHex(blockNumber), IntToHex(transactionIndex))
 }
 
 // EthGetTransactionReceipt returns the receipt of a transaction by transaction hash.
