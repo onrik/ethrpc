@@ -674,6 +674,88 @@ func (s *EthRPCTestSuite) TestEthGetBlockByNumber() {
 	s.Require().Nil(err)
 }
 
+func (s *EthRPCTestSuite) TestEthCall() {
+	s.registerResponse(`"0x11"`, func(body []byte) {
+		s.methodEqual(body, "eth_call")
+		s.paramsEqual(body, `[{"from":"0x111","to":"0x222"}, "ttt"]`)
+	})
+
+	result, err := s.rpc.EthCall(T{
+		From: "0x111",
+		To:   "0x222",
+	}, "ttt")
+	s.Require().Nil(err)
+	s.Require().Equal("0x11", result)
+}
+
+func (s *EthRPCTestSuite) TestEthEstimateGas() {
+	s.registerResponse(`"0x5022"`, func(body []byte) {
+		s.methodEqual(body, "eth_estimateGas")
+		s.paramsEqual(body, `[{"from":"0x111","to":"0x222"}]`)
+	})
+	result, err := s.rpc.EthEstimateGas(T{
+		From: "0x111",
+		To:   "0x222",
+	})
+	s.Require().Nil(err)
+	s.Require().Equal(20514, result)
+}
+
+func (s *EthRPCTestSuite) TestEthGetTransactionReceipt() {
+	result := `{
+        "blockHash": "0x11537af16aec572bb72d6d52e2c801dbfc10f42ab6ea849fd8e31b57d7099eea",
+        "blockNumber": "0x3919d3",
+        "contractAddress": null,
+        "cumulativeGasUsed": "0x1677f1",
+        "gasUsed": "0x10148",
+        "logs": [{
+            "address": "0xcd111aa492a9c77a367c36e6d6af8e6f212e0c8e",
+            "topics": ["0x78e4fc71ff7e525b3b4660a76336a2046232fd9bba9c65abb22fa3d07d6e7066"],
+            "data": "0x9da86521f54f8e4747f86593145f7ec22f2ab4c8e32288c378ed503f253b6426",
+            "blockNumber": "0x3919d3",
+            "transactionHash": "0x9c17afa5336d3cfd47e2e795520959b92e627e123e538fd4d5d7ece9025a8dce",
+            "transactionIndex": "0x13",
+            "blockHash": "0x11537af16aec572bb72d6d52e2c801dbfc10f42ab6ea849fd8e31b57d7099eea",
+            "logIndex": "0xc",
+            "removed": false
+        }],
+        "logsBloom": "0x001",
+        "root": "0x55b68780caee96e686eb398371bb679574d4b995614ae94243da4886059a47ee",
+        "transactionHash": "0x9c17afa5336d3cfd47e2e795520959b92e627e123e538fd4d5d7ece9025a8dce",
+        "transactionIndex": "0x13"  
+	}`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_getTransactionReceipt")
+		s.paramsEqual(body, `["0x9c17afa5336d3cfd47e2e795520959b92e627e123e538fd4d5d7ece9025a8dce"]`)
+	})
+
+	hash := "0x9c17afa5336d3cfd47e2e795520959b92e627e123e538fd4d5d7ece9025a8dce"
+	receipt, err := s.rpc.EthGetTransactionReceipt(hash)
+	s.Require().Nil(err)
+	s.Require().NotNil(receipt)
+	s.Require().Equal(hash, receipt.TransactionHash)
+	s.Require().Equal(19, receipt.TransactionIndex)
+	s.Require().Equal("0x11537af16aec572bb72d6d52e2c801dbfc10f42ab6ea849fd8e31b57d7099eea", receipt.BlockHash)
+	s.Require().Equal(3742163, receipt.BlockNumber)
+	s.Require().Equal(1472497, receipt.CumulativeGasUsed)
+	s.Require().Equal(65864, receipt.GasUsed)
+	s.Require().Equal("", receipt.ContractAddress)
+	s.Require().Equal("0x001", receipt.LogsBloom)
+	s.Require().Equal("0x55b68780caee96e686eb398371bb679574d4b995614ae94243da4886059a47ee", receipt.Root)
+	s.Require().Equal(1, len(receipt.Logs))
+	s.Require().Equal(Log{
+		Removed:          false,
+		LogIndex:         12,
+		TransactionIndex: receipt.TransactionIndex,
+		TransactionHash:  receipt.TransactionHash,
+		BlockNumber:      receipt.BlockNumber,
+		BlockHash:        receipt.BlockHash,
+		Address:          "0xcd111aa492a9c77a367c36e6d6af8e6f212e0c8e",
+		Data:             "0x9da86521f54f8e4747f86593145f7ec22f2ab4c8e32288c378ed503f253b6426",
+		Topics:           []string{"0x78e4fc71ff7e525b3b4660a76336a2046232fd9bba9c65abb22fa3d07d6e7066"},
+	}, receipt.Logs[0])
+}
+
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
 }
