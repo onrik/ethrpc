@@ -46,7 +46,7 @@ func NewEthRPC(url string) *EthRPC {
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
-	result, err := rpc.RawCall(method, params...)
+	result, err := rpc.Call(method, params...)
 	if err != nil {
 		return err
 	}
@@ -62,8 +62,8 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 	return nil
 }
 
-// RawCall returns raw response of method call
-func (rpc *EthRPC) RawCall(method string, params ...interface{}) (json.RawMessage, error) {
+// Call returns raw response of method call
+func (rpc *EthRPC) Call(method string, params ...interface{}) (json.RawMessage, error) {
 	request := ethRequest{
 		ID:      1,
 		JSONRPC: "2.0",
@@ -104,6 +104,11 @@ func (rpc *EthRPC) RawCall(method string, params ...interface{}) (json.RawMessag
 
 	return resp.Result, nil
 
+}
+
+// RawCall returns raw response of method call (Deprecated)
+func (rpc *EthRPC) RawCall(method string, params ...interface{}) (json.RawMessage, error) {
+	return rpc.Call(method, params...)
 }
 
 // Web3ClientVersion returns the current client version.
