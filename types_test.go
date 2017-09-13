@@ -35,7 +35,30 @@ func TestHexBigUnmarshal(t *testing.T) {
 	require.Equal(t, hexBig(b), test.ID)
 }
 
+func TestSyncingUnmarshal(t *testing.T) {
+	syncing := new(Syncing)
+	err := json.Unmarshal([]byte("0"), syncing)
+	require.NotNil(t, err)
+
+	data := []byte(`{
+		"startingBlock": "0x384",
+		"currentBlock": "0x386",
+		"highestBlock": "0x454"
+	}`)
+
+	err = json.Unmarshal(data, syncing)
+	require.Nil(t, err)
+	require.True(t, syncing.IsSyncing)
+	require.Equal(t, 900, syncing.StartingBlock)
+	require.Equal(t, 902, syncing.CurrentBlock)
+	require.Equal(t, 1108, syncing.HighestBlock)
+}
+
 func TestTransactionUnmarshal(t *testing.T) {
+	tx := new(Transaction)
+	err := json.Unmarshal([]byte("111"), tx)
+	require.NotNil(t, err)
+
 	data := []byte(`{
         "blockHash": "0x3003694478c108eaec173afcb55eafbb754a0b204567329f623438727ffa90d8",
         "blockNumber": "0x83319",
@@ -50,8 +73,7 @@ func TestTransactionUnmarshal(t *testing.T) {
         "value": "0x0"
     }`)
 
-	tx := new(Transaction)
-	err := json.Unmarshal(data, tx)
+	err = json.Unmarshal(data, tx)
 
 	require.Nil(t, err)
 	require.Equal(t, "0x3003694478c108eaec173afcb55eafbb754a0b204567329f623438727ffa90d8", tx.BlockHash)
@@ -68,6 +90,10 @@ func TestTransactionUnmarshal(t *testing.T) {
 }
 
 func TestLogUnmarshal(t *testing.T) {
+	log := new(Log)
+	err := json.Unmarshal([]byte("{dsfdf"), log)
+	require.NotNil(t, err)
+
 	data := []byte(`{
         "address": "0xd10e3be2bc8f959bc8c41cf65f60de721cf89adf",
         "topics": ["0x78e4fc71ff7e525b3b4660a76336a2046232fd9bba9c65abb22fa3d07d6e7066"],
@@ -80,8 +106,7 @@ func TestLogUnmarshal(t *testing.T) {
         "removed": false
     }`)
 
-	log := new(Log)
-	err := json.Unmarshal(data, log)
+	err = json.Unmarshal(data, log)
 
 	require.Nil(t, err)
 	require.Equal(t, "0xd10e3be2bc8f959bc8c41cf65f60de721cf89adf", log.Address)
@@ -96,6 +121,10 @@ func TestLogUnmarshal(t *testing.T) {
 }
 
 func TestTransactionReceiptUnmarshal(t *testing.T) {
+	receipt := new(TransactionReceipt)
+	err := json.Unmarshal([]byte("[1]"), receipt)
+	require.NotNil(t, err)
+
 	data := []byte(`{
         "blockHash": "0x3757b6efd7f82e3a832f0ec229b2fa36e622033ae7bad76b95763055a69374f7",
         "blockNumber": "0x7f2cd",
@@ -119,8 +148,7 @@ func TestTransactionReceiptUnmarshal(t *testing.T) {
         "transactionIndex": "0x1"
     }`)
 
-	receipt := new(TransactionReceipt)
-	err := json.Unmarshal(data, receipt)
+	err = json.Unmarshal(data, receipt)
 
 	require.Nil(t, err)
 	require.Equal(t, 1, len(receipt.Logs))
