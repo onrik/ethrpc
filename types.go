@@ -7,6 +7,7 @@ import (
 	"unsafe"
 )
 
+// Syncing - object with syncing data info
 type Syncing struct {
 	IsSyncing     bool
 	StartingBlock int
@@ -14,6 +15,7 @@ type Syncing struct {
 	HighestBlock  int
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (s *Syncing) UnmarshalJSON(data []byte) error {
 	proxy := new(proxySyncing)
 	if err := json.Unmarshal(data, proxy); err != nil {
@@ -37,6 +39,7 @@ type T struct {
 	Nonce    int
 }
 
+// MarshalJSON implements the json.Unmarshaler interface.
 func (t T) MarshalJSON() ([]byte, error) {
 	params := map[string]interface{}{
 		"from": t.From,
@@ -78,6 +81,7 @@ type Transaction struct {
 	Input            string
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (t *Transaction) UnmarshalJSON(data []byte) error {
 	proxy := new(proxyTransaction)
 	if err := json.Unmarshal(data, proxy); err != nil {
@@ -102,6 +106,7 @@ type Log struct {
 	Topics           []string
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (log *Log) UnmarshalJSON(data []byte) error {
 	proxy := new(proxyLog)
 	if err := json.Unmarshal(data, proxy); err != nil {
@@ -127,6 +132,7 @@ type TransactionReceipt struct {
 	Root              string
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (t *TransactionReceipt) UnmarshalJSON(data []byte) error {
 	proxy := new(proxyTransactionReceipt)
 	if err := json.Unmarshal(data, proxy); err != nil {
