@@ -118,6 +118,32 @@ func (log *Log) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// FilterParams - Filter parameters object
+type FilterParams struct {
+	FromBlock string
+	ToBlock string
+	Address string
+	Topics []string
+}
+
+func (p FilterParams) MarshalJSON() ([]byte, error) {
+	params := map[string]interface{}{}
+	if p.FromBlock != "" {
+		params["fromBlock"] = p.FromBlock
+	}
+	if p.ToBlock != "" {
+		params["toBlock"] = p.ToBlock
+	}
+	if p.Address != "" {
+		params["address"] = p.Address
+	}
+	if len(p.Topics) > 0 {
+		params["topics"] = p.Topics
+	}
+
+	return json.Marshal(params)
+}
+
 // TransactionReceipt - transaction receipt object
 type TransactionReceipt struct {
 	TransactionHash   string

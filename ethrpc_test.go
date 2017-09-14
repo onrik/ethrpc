@@ -2,7 +2,6 @@ package ethrpc
 
 import (
 	"errors"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"math/big"
@@ -947,28 +946,28 @@ func (s *EthRPCTestSuite) TestEthGetTransactionByBlockNumberAndIndex() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
 	address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
-	data := map[string]interface{}{"address": "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
+	filterData := FilterParams{Address: address}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
 		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s"}]`, address))
 	})
 
-	filterID, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(filterData)
 	s.Require().Nil(err)
 	s.Require().Equal(result, filterID)
 }
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 	topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
-	data := map[string]interface{}{"topics": topics}
+	filterData := FilterParams{Topics: topics}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
 		s.paramsEqual(body, fmt.Sprintf(`[{"topics": ["%s", "%s"]}]`, topics[0], topics[1]))
 	})
 
-	filterID, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(filterData)
 	s.Require().Nil(err)
 	s.Require().Equal(result, filterID)
 }
@@ -976,41 +975,47 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 	topics := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66", "0xb2b2fffff341e560da3d439ef5e5309d78a22a66"}
 	address := "0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"
-	data := map[string]interface{}{"address": address, "topics": topics}
+	filterData := FilterParams{Address: address, Topics: topics}
 	result := "0x6996a3a4788d4f2067108d1f536d4330"
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_newFilter")
 		s.paramsEqual(body, fmt.Sprintf(`[{"address": "%s", "topics": ["%s", "%s"]}]`, address, topics[0], topics[1]))
 	})
 
-	filterID, err := s.rpc.EthNewFilter(data)
+	filterID, err := s.rpc.EthNewFilter(filterData)
 	s.Require().Nil(err)
 	s.Require().Equal(result, filterID)
 }
 
 func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
-	result := []interface{}{
-		map[string]interface{}{
-			"address":     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
-			"blockHash":   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
-			"blockNumber": "0xc8fc2",
-			"data":        "0x000000000000000000000000000000000000000000000000000000112c905320",
-			"logIndex":    "0x0",
-			"removed":     "false",
-			"topics": []interface{}{
-				"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160",
-			},
-		}}
-	json_result, _ := json.Marshal(result)
-	s.registerResponse(string(json_result), func(body []byte) {
+	result := `[{
+		"address":"0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+		"blockHash":"0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+		"blockNumber":1,
+		"data":"0x000000000000000000000000000000000000000000000000000000112c905320",
+		"logIndex":0,
+		"removed":false,
+		"topics":["0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"]
+	}]`
+	s.registerResponse(result, func(body []byte) {
 		s.methodEqual(body, "eth_getFilterChanges")
 		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
 	})
 
 	logs, err := s.rpc.EthGetFilterChanges(filterID)
 	s.Require().Nil(err)
-	s.Require().Equal(result, logs)
+	s.Require().Equal([]Log{
+		Log{
+			Address:"0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+			BlockHash:"0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+			BlockNumber:1,
+			Data:"0x000000000000000000000000000000000000000000000000000000112c905320",
+			LogIndex:0,
+			Removed:false,
+			Topics:[]string{"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"},
+		},
+	}, logs)
 }
 
 func (s *EthRPCTestSuite) TestEthUninstallFilter() {

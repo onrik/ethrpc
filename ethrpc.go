@@ -427,15 +427,15 @@ func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
 }
 
 // EthNewFilter creates a new filter object.
-func (rpc *EthRPC) EthNewFilter(params map[string]interface{}) (string, error) {
+func (rpc *EthRPC) EthNewFilter(params FilterParams) (string, error) {
 	var filterID string
 	err := rpc.call("eth_newFilter", &filterID, params)
 	return filterID, err
 }
 
 // EthGetFilterChanges Polling method for a filter, which returns an array of logs which occurred since last poll.
-func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]interface{}, error) {
-	var logs = []interface{}{}
+func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]Log, error) {
+	var logs = []Log{}
 	err := rpc.call("eth_getFilterChanges", &logs, filterID)
 	return logs, err
 }
