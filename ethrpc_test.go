@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
+	"strconv"
 	"testing"
 
 	"github.com/jarcoal/httpmock"
@@ -941,6 +942,102 @@ func (s *EthRPCTestSuite) TestEthGetTransactionByBlockNumberAndIndex() {
 	t, err := s.rpc.EthGetTransactionByBlockNumberAndIndex(32847834, 10)
 	s.Require().Nil(err)
 	s.Require().NotNil(t)
+}
+
+func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
+	address := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
+	filterData := FilterParams{Address: address}
+	result := "0x6996a3a4788d4f2067108d1f536d4330"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_newFilter")
+		s.paramsEqual(body, fmt.Sprintf(`[{"address": ["%s"]}]`, address[0]))
+	})
+
+	filterID, err := s.rpc.EthNewFilter(filterData)
+	s.Require().Nil(err)
+	s.Require().Equal(result, filterID)
+}
+
+func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
+	topics := [][]string{
+		[]string{
+			"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66",
+			"0xb2b2fffff341e560da3d439ef5e5309d78a22a66",
+		},
+	}
+	filterData := FilterParams{Topics: topics}
+	result := "0x6996a3a4788d4f2067108d1f536d4330"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_newFilter")
+		s.paramsEqual(body, fmt.Sprintf(`[{"topics": [["%s", "%s"]]}]`, topics[0][0], topics[0][1]))
+	})
+
+	filterID, err := s.rpc.EthNewFilter(filterData)
+	s.Require().Nil(err)
+	s.Require().Equal(result, filterID)
+}
+
+func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
+	topics := [][]string{
+			[]string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
+			[]string{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
+	}
+	address := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
+	filterData := FilterParams{Address: address, Topics: topics}
+	result := "0x6996a3a4788d4f2067108d1f536d4330"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_newFilter")
+		s.paramsEqual(body, fmt.Sprintf(`[{"address": ["%s"], "topics": [["%s"], ["%s"]]}]`, address[0], topics[0][0], topics[1][0]))
+	})
+
+	filterID, err := s.rpc.EthNewFilter(filterData)
+	s.Require().Nil(err)
+	s.Require().Equal(result, filterID)
+}
+
+func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
+	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
+	result := `[{
+		"address":"0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+		"blockHash":"0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+		"blockNumber":1,
+		"data":"0x000000000000000000000000000000000000000000000000000000112c905320",
+		"logIndex":0,
+		"removed":false,
+		"topics":["0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"]
+	}]`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_getFilterChanges")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
+	})
+
+	logs, err := s.rpc.EthGetFilterChanges(filterID)
+	s.Require().Nil(err)
+	s.Require().Equal([]Log{
+		Log{
+			Address:"0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+			BlockHash:"0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+			BlockNumber:1,
+			Data:"0x000000000000000000000000000000000000000000000000000000112c905320",
+			LogIndex:0,
+			Removed:false,
+			Topics:[]string{"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"},
+		},
+	}, logs)
+}
+
+func (s *EthRPCTestSuite) TestEthUninstallFilter() {
+	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
+	result := "true"
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_uninstallFilter")
+		s.paramsEqual(body, fmt.Sprintf(`["%s"]`, filterID))
+	})
+
+	uninstall, err := s.rpc.EthUninstallFilter(filterID)
+	s.Require().Nil(err)
+	boolRes, _ := strconv.ParseBool(result)
+	s.Require().Equal(boolRes, uninstall)
 }
 
 func TestEthRPCTestSuite(t *testing.T) {

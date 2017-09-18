@@ -118,6 +118,14 @@ func (log *Log) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// FilterParams - Filter parameters object
+type FilterParams struct {
+	FromBlock string `json:"fromBlock,omitempty"`
+	ToBlock string `json:"toBlock,omitempty"`
+	Address []string `json:"address,omitempty"`
+	Topics [][]string `json:"topics,omitempty"`
+}
+
 // TransactionReceipt - transaction receipt object
 type TransactionReceipt struct {
 	TransactionHash   string
