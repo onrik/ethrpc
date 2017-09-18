@@ -979,8 +979,8 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 	topics := [][]string{
-			[]string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
-			[]string{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
+		[]string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
+		[]string{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
 	}
 	address := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
 	filterData := FilterParams{Address: address, Topics: topics}
@@ -1015,13 +1015,13 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
 		Log{
-			Address:"0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
-			BlockHash:"0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
-			BlockNumber:1,
-			Data:"0x000000000000000000000000000000000000000000000000000000112c905320",
-			LogIndex:0,
-			Removed:false,
-			Topics:[]string{"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"},
+			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+			BlockNumber: 1,
+			Data:        "0x000000000000000000000000000000000000000000000000000000112c905320",
+			LogIndex:    0,
+			Removed:     false,
+			Topics:      []string{"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"},
 		},
 	}, logs)
 }
