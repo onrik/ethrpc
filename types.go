@@ -120,28 +120,10 @@ func (log *Log) UnmarshalJSON(data []byte) error {
 
 // FilterParams - Filter parameters object
 type FilterParams struct {
-	FromBlock string
-	ToBlock string
-	Address string
-	Topics []string
-}
-
-func (p FilterParams) MarshalJSON() ([]byte, error) {
-	params := map[string]interface{}{}
-	if p.FromBlock != "" {
-		params["fromBlock"] = p.FromBlock
-	}
-	if p.ToBlock != "" {
-		params["toBlock"] = p.ToBlock
-	}
-	if p.Address != "" {
-		params["address"] = p.Address
-	}
-	if len(p.Topics) > 0 {
-		params["topics"] = p.Topics
-	}
-
-	return json.Marshal(params)
+	FromBlock string `json:"fromBlock,omitempty"`
+	ToBlock string `json:"toBlock,omitempty"`
+	Address []string `json:"address,omitempty"`
+	Topics [][]string `json:"topics,omitempty"`
 }
 
 // TransactionReceipt - transaction receipt object
