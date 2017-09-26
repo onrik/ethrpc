@@ -91,7 +91,7 @@ func TestTransactionUnmarshal(t *testing.T) {
 
 func TestLogUnmarshal(t *testing.T) {
 	log := new(Log)
-	err := json.Unmarshal([]byte("{dsfdf"), log)
+	err := json.Unmarshal([]byte("111"), log)
 	require.NotNil(t, err)
 
 	data := []byte(`{

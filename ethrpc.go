@@ -433,14 +433,21 @@ func (rpc *EthRPC) EthNewFilter(params FilterParams) (string, error) {
 	return filterID, err
 }
 
-// EthGetFilterChanges Polling method for a filter, which returns an array of logs which occurred since last poll.
+// EthGetFilterChanges polling method for a filter, which returns an array of logs which occurred since last poll.
 func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]Log, error) {
 	var logs = []Log{}
 	err := rpc.call("eth_getFilterChanges", &logs, filterID)
 	return logs, err
 }
 
-// EthUninstallFilter Uninstalls a filter with given id.
+// EthGetFilterLogs returns an array of all logs matching filter with given id.
+func (rpc *EthRPC) EthGetFilterLogs(filterID string) ([]Log, error) {
+	var logs = []Log{}
+	err := rpc.call("eth_getFilterLogs", &logs, filterID)
+	return logs, err
+}
+
+// EthUninstallFilter uninstalls a filter with given id.
 func (rpc *EthRPC) EthUninstallFilter(filterID string) (bool, error) {
 	var res bool
 	err := rpc.call("eth_uninstallFilter", &res, filterID)
