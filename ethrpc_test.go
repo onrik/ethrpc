@@ -1057,6 +1057,50 @@ func (s *EthRPCTestSuite) TestEthGetFilterLogs() {
 	}, logs)
 }
 
+func (s *EthRPCTestSuite) TestEthGetLogs() {
+	params := FilterParams{
+		FromBlock: "0x1",
+		ToBlock:   "0x10",
+		Address:   []string{"0x8888f1f195afa192cfee860698584c030f4c9db1"},
+		Topics: [][]string{
+			[]string{"0x111"},
+			nil,
+		},
+	}
+	result := `[{
+		"address": "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+		"blockHash": "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+		"blockNumber": 1,
+		"data": "0x000000000000000000000000000000000000000000000000000000112c905320",
+		"logIndex": 0,
+		"removed": false,
+		"topics": ["0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"]
+	}]`
+	s.registerResponse(result, func(body []byte) {
+		s.methodEqual(body, "eth_getLogs")
+		s.paramsEqual(body, fmt.Sprintf(`[{
+			"fromBlock": "0x1",
+			"toBlock": "0x10",
+			"address": ["0x8888f1f195afa192cfee860698584c030f4c9db1"],
+			"topics": [["0x111"], null]
+		}]`))
+	})
+
+	logs, err := s.rpc.EthGetLogs(params)
+	s.Require().Nil(err)
+	s.Require().Equal([]Log{
+		Log{
+			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
+			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
+			BlockNumber: 1,
+			Data:        "0x000000000000000000000000000000000000000000000000000000112c905320",
+			LogIndex:    0,
+			Removed:     false,
+			Topics:      []string{"0x581d416ae9dff30c9305c2b35cb09ed5991897ab97804db29ccf92678e953160"},
+		},
+	}, logs)
+}
+
 func (s *EthRPCTestSuite) TestEthUninstallFilter() {
 	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := "true"

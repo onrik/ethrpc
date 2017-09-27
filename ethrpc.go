@@ -447,6 +447,13 @@ func (rpc *EthRPC) EthGetFilterLogs(filterID string) ([]Log, error) {
 	return logs, err
 }
 
+// EthGetLogs returns an array of all logs matching a given filter object.
+func (rpc *EthRPC) EthGetLogs(params FilterParams) ([]Log, error) {
+	var logs = []Log{}
+	err := rpc.call("eth_getLogs", &logs, params)
+	return logs, err
+}
+
 // EthUninstallFilter uninstalls a filter with given id.
 func (rpc *EthRPC) EthUninstallFilter(filterID string) (bool, error) {
 	var res bool
