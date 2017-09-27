@@ -433,6 +433,29 @@ func (rpc *EthRPC) EthNewFilter(params FilterParams) (string, error) {
 	return filterID, err
 }
 
+// EthNewBlockFilter creates a filter in the node, to notify when a new block arrives.
+// To check if the state has changed, call EthGetFilterChanges.
+func (rpc *EthRPC) EthNewBlockFilter() (string, error) {
+	var filterID string
+	err := rpc.call("eth_newBlockFilter", &filterID)
+	return filterID, err
+}
+
+// EthNewPendingTransactionFilter creates a filter in the node, to notify when new pending transactions arrive.
+// To check if the state has changed, call EthGetFilterChanges.
+func (rpc *EthRPC) EthNewPendingTransactionFilter() (string, error) {
+	var filterID string
+	err := rpc.call("eth_newPendingTransactionFilter", &filterID)
+	return filterID, err
+}
+
+// EthUninstallFilter uninstalls a filter with given id.
+func (rpc *EthRPC) EthUninstallFilter(filterID string) (bool, error) {
+	var res bool
+	err := rpc.call("eth_uninstallFilter", &res, filterID)
+	return res, err
+}
+
 // EthGetFilterChanges polling method for a filter, which returns an array of logs which occurred since last poll.
 func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]Log, error) {
 	var logs = []Log{}
@@ -452,11 +475,4 @@ func (rpc *EthRPC) EthGetLogs(params FilterParams) ([]Log, error) {
 	var logs = []Log{}
 	err := rpc.call("eth_getLogs", &logs, params)
 	return logs, err
-}
-
-// EthUninstallFilter uninstalls a filter with given id.
-func (rpc *EthRPC) EthUninstallFilter(filterID string) (bool, error) {
-	var res bool
-	err := rpc.call("eth_uninstallFilter", &res, filterID)
-	return res, err
 }

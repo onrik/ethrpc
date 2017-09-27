@@ -995,6 +995,28 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 	s.Require().Equal(result, filterID)
 }
 
+func (s *EthRPCTestSuite) TestEthNewBlockFilter() {
+	result := "0x6996a3a4788d4f2067108d1f536d4330"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_newBlockFilter")
+	})
+
+	filterID, err := s.rpc.EthNewBlockFilter()
+	s.Require().Nil(err)
+	s.Require().Equal(result, filterID)
+}
+
+func (s *EthRPCTestSuite) TestEthNewPendingTransactionFilter() {
+	result := "0x153"
+	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
+		s.methodEqual(body, "eth_newPendingTransactionFilter")
+	})
+
+	filterID, err := s.rpc.EthNewPendingTransactionFilter()
+	s.Require().Nil(err)
+	s.Require().Equal(result, filterID)
+}
+
 func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	filterID := "0x6996a3a4788d4f2067108d1f536d4330"
 	result := `[{
