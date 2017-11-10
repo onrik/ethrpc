@@ -67,6 +67,15 @@ Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/
 
 ##### Usage:
 ```go
+package main
+
+import (
+    "log"
+    "math/big"
+    
+    "github.com/onrik/ethrpc"
+)
+
 func main() {
 	client := ethrpc.NewEthRPC("http://127.0.0.1:8545")
 
