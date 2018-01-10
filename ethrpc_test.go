@@ -622,6 +622,7 @@ func (s *EthRPCTestSuite) TestGetBlock() {
 	s.Require().Nil(err)
 	s.Require().NotNil(block)
 	s.Require().Equal(hash, block.Hash)
+	s.Require().Equal("0xa6b69fa82eaea8674236170a2d8ea41d80c176315a579138b718f3bcaa4c39ab", block.MixHash)
 	s.Require().Equal(4216277, block.Number)
 	s.Require().Equal("0x913f938dcb4ff83b2b6b42a0cf6517d438a3ce95174e9342c780fd20c84dfd03", block.ParentHash)
 	s.Require().Equal("0xefd7ef000d0b78b8", block.Nonce)
