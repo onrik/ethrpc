@@ -93,7 +93,7 @@ func (s *EthRPCTestSuite) TestWeb3ClientVersion() {
 func (s *EthRPCTestSuite) TestCall() {
 	// Test http error
 	httpmock.RegisterResponder("POST", s.rpc.url, func(request *http.Request) (*http.Response, error) {
-		return nil, errors.New("Error")
+		return nil, errors.New("error")
 	})
 
 	_, err := s.rpc.Call("test")
@@ -123,7 +123,7 @@ func (s *EthRPCTestSuite) TestCall() {
 func (s *EthRPCTestSuite) Test_call() {
 	// Test http error
 	httpmock.RegisterResponder("POST", s.rpc.url, func(request *http.Request) (*http.Response, error) {
-		return nil, fmt.Errorf("Error")
+		return nil, fmt.Errorf("error")
 	})
 	err := s.rpc.call("test", nil)
 	s.Require().NotNil(err)
@@ -202,7 +202,7 @@ func (s *EthRPCTestSuite) TestNetListening() {
 
 func (s *EthRPCTestSuite) TestNetPeerCount() {
 	// Test error
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	peerCount, err := s.rpc.NetPeerCount()
 	s.Require().NotNil(err)
 	s.Require().Equal(0, peerCount)
@@ -230,7 +230,7 @@ func (s *EthRPCTestSuite) TestEthProtocolVersion() {
 }
 
 func (s *EthRPCTestSuite) TestEthSyncing() {
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	syncing, err := s.rpc.EthSyncing()
 	s.Require().NotNil(err)
 
@@ -295,7 +295,7 @@ func (s *EthRPCTestSuite) TestEthMining() {
 }
 
 func (s *EthRPCTestSuite) TestEthHashrate() {
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	hashrate, err := s.rpc.EthHashrate()
 	s.Require().NotNil(err)
 
@@ -310,7 +310,7 @@ func (s *EthRPCTestSuite) TestEthHashrate() {
 }
 
 func (s *EthRPCTestSuite) TestEthGasPrice() {
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	gasPrice, err := s.rpc.EthGasPrice()
 	s.Require().NotNil(err)
 
@@ -337,7 +337,7 @@ func (s *EthRPCTestSuite) TestEthAccounts() {
 }
 
 func (s *EthRPCTestSuite) TestEthBlockNumber() {
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	blockBumber, err := s.rpc.EthBlockNumber()
 	s.Require().NotNil(err)
 
@@ -353,7 +353,7 @@ func (s *EthRPCTestSuite) TestEthBlockNumber() {
 
 func (s *EthRPCTestSuite) TestEthGetBalance() {
 	address := "0x407d73d8a49eeb85d32cf465507dd71d507100c1"
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	balance, err := s.rpc.EthGetBalance(address, "latest")
 	s.Require().NotNil(err)
 
@@ -385,7 +385,7 @@ func (s *EthRPCTestSuite) TestEthGetStorageAt() {
 
 func (s *EthRPCTestSuite) TestEthGetTransactionCount() {
 	address := "0x407d73d8a49eeb85d32cf465507dd71d507100c1"
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	count, err := s.rpc.EthGetTransactionCount(address, "latest")
 	s.Require().NotNil(err)
 
@@ -401,7 +401,7 @@ func (s *EthRPCTestSuite) TestEthGetTransactionCount() {
 
 func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByHash() {
 	hash := "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	count, err := s.rpc.EthGetBlockTransactionCountByHash(hash)
 	s.Require().NotNil(err)
 
@@ -417,7 +417,7 @@ func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByHash() {
 
 func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByNumber() {
 	number := 2384732
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	count, err := s.rpc.EthGetBlockTransactionCountByNumber(number)
 	s.Require().NotNil(err)
 
@@ -433,7 +433,7 @@ func (s *EthRPCTestSuite) TestEthGetBlockTransactionCountByNumber() {
 
 func (s *EthRPCTestSuite) TestEthGetUncleCountByBlockHash() {
 	hash := "0xb903239f8543d04b5dc1ba6579132b143087c68db1b2168786408fcbce568238"
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	count, err := s.rpc.EthGetUncleCountByBlockHash(hash)
 	s.Require().NotNil(err)
 
@@ -449,7 +449,7 @@ func (s *EthRPCTestSuite) TestEthGetUncleCountByBlockHash() {
 
 func (s *EthRPCTestSuite) TestEthGetUncleCountByBlockNumber() {
 	number := 3987434
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	count, err := s.rpc.EthGetUncleCountByBlockNumber(number)
 	s.Require().NotNil(err)
 
@@ -560,7 +560,7 @@ func (s *EthRPCTestSuite) TestEthGetCompilers() {
 }
 
 func (s *EthRPCTestSuite) TestGetBlock() {
-	s.registerResponseError(errors.New("Error"))
+	s.registerResponseError(errors.New("error"))
 	block, err := s.rpc.getBlock("eth_getBlockByHash", true)
 	s.Require().NotNil(err)
 
@@ -961,7 +961,7 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 	topics := [][]string{
-		[]string{
+		{
 			"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66",
 			"0xb2b2fffff341e560da3d439ef5e5309d78a22a66",
 		},
@@ -980,8 +980,8 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 	topics := [][]string{
-		[]string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
-		[]string{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
+		{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
+		{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
 	}
 	address := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
 	filterData := FilterParams{Address: address, Topics: topics}
@@ -1037,7 +1037,7 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	logs, err := s.rpc.EthGetFilterChanges(filterID)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
@@ -1068,7 +1068,7 @@ func (s *EthRPCTestSuite) TestEthGetFilterLogs() {
 	logs, err := s.rpc.EthGetFilterLogs(filterID)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
@@ -1086,7 +1086,7 @@ func (s *EthRPCTestSuite) TestEthGetLogs() {
 		ToBlock:   "0x10",
 		Address:   []string{"0x8888f1f195afa192cfee860698584c030f4c9db1"},
 		Topics: [][]string{
-			[]string{"0x111"},
+			{"0x111"},
 			nil,
 		},
 	}
@@ -1112,7 +1112,7 @@ func (s *EthRPCTestSuite) TestEthGetLogs() {
 	logs, err := s.rpc.EthGetLogs(params)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
