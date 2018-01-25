@@ -36,13 +36,14 @@ type ethRequest struct {
 
 // EthRPC - Ethereum rpc client
 type EthRPC struct {
-	url   string
-	Debug bool
+	url    string
+	client http.Client
+	Debug  bool
 }
 
 // NewEthRPC create new rpc client with given url
-func NewEthRPC(url string) *EthRPC {
-	return &EthRPC{url: url}
+func NewEthRPC(url string, client http.Client) *EthRPC {
+	return &EthRPC{url: url, client: client}
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
@@ -76,7 +77,7 @@ func (rpc *EthRPC) Call(method string, params ...interface{}) (json.RawMessage, 
 		return nil, err
 	}
 
-	response, err := http.Post(rpc.url, "application/json", bytes.NewBuffer(body))
+	response, err := rpc.client.Post(rpc.url, "application/json", bytes.NewBuffer(body))
 	if response != nil {
 		defer response.Body.Close()
 	}
