@@ -37,13 +37,29 @@ type ethRequest struct {
 // EthRPC - Ethereum rpc client
 type EthRPC struct {
 	url    string
-	client http.Client
-	Debug  bool
+	client httpClient
+	debug  bool
+}
+
+func Client(client httpClient) func(rpc *EthRPC) {
+	return func(rpc *EthRPC) {
+		rpc.client = client
+	}
+}
+
+func Debug(isEnabled bool) func(rpc *EthRPC) {
+	return func(rpc *EthRPC) {
+		rpc.debug = isEnabled
+	}
 }
 
 // NewEthRPC create new rpc client with given url
-func NewEthRPC(url string, client http.Client) *EthRPC {
-	return &EthRPC{url: url, client: client}
+func NewEthRPC(url string, options ...func(rpc *EthRPC)) *EthRPC {
+	rpc := &EthRPC{url: url, client: &http.Client{}}
+	for _, option := range options {
+		option(rpc)
+	}
+	return rpc
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
