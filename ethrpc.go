@@ -37,19 +37,19 @@ type ethRequest struct {
 // EthRPC - Ethereum rpc client
 type EthRPC struct {
 	url    string
-	client httpClient
+	client HttpClient
 	debug  bool
 }
 
-func Client(client httpClient) func(rpc *EthRPC) {
+func Client(client HttpClient) func(rpc *EthRPC) {
 	return func(rpc *EthRPC) {
 		rpc.client = client
 	}
 }
 
-func Debug(isEnabled bool) func(rpc *EthRPC) {
+func Debug(enabled bool) func(rpc *EthRPC) {
 	return func(rpc *EthRPC) {
-		rpc.debug = isEnabled
+		rpc.debug = enabled
 	}
 }
 

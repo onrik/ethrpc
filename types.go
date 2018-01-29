@@ -321,6 +321,6 @@ func (proxy *proxyBlockWithoutTransactions) toBlock() Block {
 	return block
 }
 
-type httpClient interface {
+type HttpClient interface {
 	Post(url string, contentType string, body io.Reader) (resp *http.Response, err error)
 }
