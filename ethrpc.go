@@ -38,7 +38,7 @@ type ethRequest struct {
 type EthRPC struct {
 	url    string
 	client HttpClient
-	debug  bool
+	Debug  bool
 }
 
 func Client(client HttpClient) func(rpc *EthRPC) {
@@ -49,7 +49,7 @@ func Client(client HttpClient) func(rpc *EthRPC) {
 
 func Debug(enabled bool) func(rpc *EthRPC) {
 	return func(rpc *EthRPC) {
-		rpc.debug = enabled
+		rpc.Debug = enabled
 	}
 }
 
