@@ -37,29 +37,23 @@ type ethRequest struct {
 // EthRPC - Ethereum rpc client
 type EthRPC struct {
 	url    string
-	client HttpClient
+	client httpClient
 	Debug  bool
 }
 
-func Client(client HttpClient) func(rpc *EthRPC) {
-	return func(rpc *EthRPC) {
-		rpc.client = client
+// New create new rpc client with given url
+func New(url string, options ...func(rpc *EthRPC)) *EthRPC {
+	rpc := &EthRPC{url: url, client: http.DefaultClient}
+	for _, option := range options {
+		option(rpc)
 	}
-}
 
-func Debug(enabled bool) func(rpc *EthRPC) {
-	return func(rpc *EthRPC) {
-		rpc.Debug = enabled
-	}
+	return rpc
 }
 
 // NewEthRPC create new rpc client with given url
 func NewEthRPC(url string, options ...func(rpc *EthRPC)) *EthRPC {
-	rpc := &EthRPC{url: url, client: &http.Client{}}
-	for _, option := range options {
-		option(rpc)
-	}
-	return rpc
+	return New(url, options...)
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
@@ -72,11 +66,7 @@ func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}
 		return nil
 	}
 
-	if err := json.Unmarshal(result, target); err != nil {
-		return err
-	}
-
-	return nil
+	return json.Unmarshal(result, target)
 }
 
 // Call returns raw response of method call
@@ -492,4 +482,14 @@ func (rpc *EthRPC) EthGetLogs(params FilterParams) ([]Log, error) {
 	var logs = []Log{}
 	err := rpc.call("eth_getLogs", &logs, params)
 	return logs, err
+}
+
+// Eth1 returns 1 ethereum value (10^18 wei)
+func (rpc *EthRPC) Eth1() *big.Int {
+	return Eth1()
+}
+
+// Eth1 returns 1 ethereum value (10^18 wei)
+func Eth1() *big.Int {
+	return big.NewInt(1000000000000000000)
 }
