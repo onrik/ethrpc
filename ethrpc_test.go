@@ -60,7 +60,7 @@ func (s *EthRPCTestSuite) paramsEqual(body []byte, expected string) {
 }
 
 func (s *EthRPCTestSuite) SetupSuite() {
-	s.rpc = New("http://127.0.0.1:8545", WithClient(http.DefaultClient), WithDebug(false))
+	s.rpc = NewEthRPC("http://127.0.0.1:8545", WithHttpClient(http.DefaultClient), WithLogger(nil), WithDebug(false))
 
 	httpmock.Activate()
 }
@@ -959,7 +959,7 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithAddress() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 	topics := [][]string{
-		[]string{
+		{
 			"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66",
 			"0xb2b2fffff341e560da3d439ef5e5309d78a22a66",
 		},
@@ -978,8 +978,8 @@ func (s *EthRPCTestSuite) TestEthNewFilterWithTopics() {
 
 func (s *EthRPCTestSuite) TestEthNewFilterWithAddressAndTopics() {
 	topics := [][]string{
-		[]string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
-		[]string{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
+		{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"},
+		{"0xb2b2fffff341e560da3d439ef5e5309d78a22a66"},
 	}
 	address := []string{"0xb2b2eeeee341e560da3d439ef5e5309d78a22a66"}
 	filterData := FilterParams{Address: address, Topics: topics}
@@ -1035,7 +1035,7 @@ func (s *EthRPCTestSuite) TestEthGetFilterChanges() {
 	logs, err := s.rpc.EthGetFilterChanges(filterID)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
@@ -1066,7 +1066,7 @@ func (s *EthRPCTestSuite) TestEthGetFilterLogs() {
 	logs, err := s.rpc.EthGetFilterLogs(filterID)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
@@ -1084,7 +1084,7 @@ func (s *EthRPCTestSuite) TestEthGetLogs() {
 		ToBlock:   "0x10",
 		Address:   []string{"0x8888f1f195afa192cfee860698584c030f4c9db1"},
 		Topics: [][]string{
-			[]string{"0x111"},
+			{"0x111"},
 			nil,
 		},
 	}
@@ -1110,7 +1110,7 @@ func (s *EthRPCTestSuite) TestEthGetLogs() {
 	logs, err := s.rpc.EthGetLogs(params)
 	s.Require().Nil(err)
 	s.Require().Equal([]Log{
-		Log{
+		{
 			Address:     "0xaca0cc3a6bf9552f2866ccc67801d4e6aa6a70f2",
 			BlockHash:   "0x9d9838090bb7f6194f62acea788688435b79cc44c62dcf1479abd9f2c72a7d5c",
 			BlockNumber: 1,
@@ -1147,6 +1147,12 @@ func TestEthError(t *testing.T) {
 
 	err = EthError{32847, "Kuku"}
 	require.Equal(t, "Error 32847 (Kuku)", err.Error())
+}
+
+func TestEth1(t *testing.T) {
+	client := NewEthRPC("")
+	require.Equal(t, int64(1000000000000000000), Eth1().Int64())
+	require.Equal(t, int64(1000000000000000000), client.Eth1().Int64())
 }
 
 func ptrInt(i int) *int {
