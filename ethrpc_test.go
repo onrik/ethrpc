@@ -843,7 +843,8 @@ func (s *EthRPCTestSuite) TestEthGetTransactionReceipt() {
         "logsBloom": "0x001",
         "root": "0x55b68780caee96e686eb398371bb679574d4b995614ae94243da4886059a47ee",
         "transactionHash": "0x9c17afa5336d3cfd47e2e795520959b92e627e123e538fd4d5d7ece9025a8dce",
-        "transactionIndex": "0x13"  
+		"transactionIndex": "0x13",
+		"status": "0x1"
 	}`
 	s.registerResponse(result, func(body []byte) {
 		s.methodEqual(body, "eth_getTransactionReceipt")
@@ -862,6 +863,7 @@ func (s *EthRPCTestSuite) TestEthGetTransactionReceipt() {
 	s.Require().Equal("", receipt.ContractAddress)
 	s.Require().Equal("0x001", receipt.LogsBloom)
 	s.Require().Equal("0x55b68780caee96e686eb398371bb679574d4b995614ae94243da4886059a47ee", receipt.Root)
+	s.Require().Equal(1, receipt.Status)
 	s.Require().Equal(1, len(receipt.Logs))
 	s.Require().Equal(Log{
 		Removed:          false,
