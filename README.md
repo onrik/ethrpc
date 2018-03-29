@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/onrik/ethrpc/badge.svg?branch=master)](https://coveralls.io/github/onrik/ethrpc?branch=master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/onrik/ethrpc)](https://goreportcard.com/report/github.com/onrik/ethrpc)
 [![GoDoc](https://godoc.org/github.com/onrik/ethrpc?status.svg)](https://godoc.org/github.com/onrik/ethrpc)
+[![Donate with Ethereum](https://en.cryptobadges.io/badge/micro/0xf4144308d6D67A1F00a61A596c0eB7B08411344a)](https://en.cryptobadges.io/donate/0xf4144308d6D67A1F00a61A596c0eB7B08411344a)
 
 Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/JSON-RPC).
 
@@ -96,3 +97,6 @@ func main() {
 }
 
 ```
+
+[![Donate with Ethereum](https://en.cryptobadges.io/badge/big/0xf4144308d6D67A1F00a61A596c0eB7B08411344a?showBalance=true)](https://en.cryptobadges.io/donate/0xf4144308d6D67A1F00a61A596c0eB7B08411344a)
+
