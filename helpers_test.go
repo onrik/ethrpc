@@ -45,4 +45,7 @@ func TestBigToHex(t *testing.T) {
 
 	i2, _ := big.NewInt(0).SetString("100000000000000000000", 10)
 	assert.Equal(t, "0x56bc75e2d63100000", BigToHex(*i2))
+
+	i3, _ := big.NewInt(0).SetString("0", 10)
+	assert.Equal(t, "0x0", BigToHex(*i3))
 }
