@@ -71,31 +71,32 @@ Golang client for ethereum [JSON RPC API](https://github.com/ethereum/wiki/wiki/
 package main
 
 import (
+    "fmt"
     "log"
-    "math/big"
-    
+
     "github.com/onrik/ethrpc"
 )
 
 func main() {
-    client := ethrcp.New("http://127.0.0.1:8545")
+    client := ethrpc.New("http://127.0.0.1:8545")
 
     version, err := client.Web3ClientVersion()
     if err != nil {
         log.Fatal(err)
     }
-    
+    fmt.Println(version)
+
     // Send 1 eth
     txid, err := client.EthSendTransaction(ethrpc.T{
         From:  "0x6247cf0412c6462da2a51d05139e2a3c6c630f0a",
         To:    "0xcfa202c4268749fbb5136f2b68f7402984ed444b",
         Value: ethrpc.Eth1(),
-    }
+    })
     if err != nil {
         log.Fatal(err)
     }
+    fmt.Println(txid)
 }
-
 ```
 
 [![Donate with Ethereum](https://en.cryptobadges.io/badge/big/0xf4144308d6D67A1F00a61A596c0eB7B08411344a?showBalance=true)](https://en.cryptobadges.io/donate/0xf4144308d6D67A1F00a61A596c0eB7B08411344a)
