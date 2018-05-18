@@ -84,7 +84,6 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-
     fmt.Println(version)
 
     // Send 1 eth
