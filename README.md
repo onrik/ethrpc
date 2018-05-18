@@ -78,7 +78,7 @@ import (
 )
 
 func main() {
-    client := ethrcp.New("http://127.0.0.1:8545")
+    client := ethrpc.New("http://127.0.0.1:8545")
 
     version, err := client.Web3ClientVersion()
     if err != nil {
