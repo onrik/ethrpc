@@ -32,9 +32,9 @@ func IntToHex(i int) string {
 
 // BigToHex covert big.Int to hexadecimal representation
 func BigToHex(bigInt big.Int) string {
-	if bigInt.Cmp(big.NewInt(0)) == 0 {
+	if bigInt.BitLen() == 0 {
 		return "0x0"
-	} else {
-		return "0x" + strings.TrimPrefix(fmt.Sprintf("%x", bigInt.Bytes()), "0")
 	}
+
+	return "0x" + strings.TrimPrefix(fmt.Sprintf("%x", bigInt.Bytes()), "0")
 }
