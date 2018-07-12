@@ -863,7 +863,7 @@ func (s *EthRPCTestSuite) TestEthGetTransactionReceipt() {
 	s.Require().Equal("", receipt.ContractAddress)
 	s.Require().Equal("0x001", receipt.LogsBloom)
 	s.Require().Equal("0x55b68780caee96e686eb398371bb679574d4b995614ae94243da4886059a47ee", receipt.Root)
-	s.Require().Equal(1, receipt.Status)
+	s.Require().Equal("0x1", receipt.Status)
 	s.Require().Equal(1, len(receipt.Logs))
 	s.Require().Equal(Log{
 		Removed:          false,

@@ -138,7 +138,7 @@ type TransactionReceipt struct {
 	Logs              []Log
 	LogsBloom         string
 	Root              string
-	Status            int
+	Status            string
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface.
@@ -219,7 +219,7 @@ type proxyTransactionReceipt struct {
 	Logs              []Log  `json:"logs"`
 	LogsBloom         string `json:"logsBloom"`
 	Root              string `json:"root"`
-	Status            hexInt `json:"status"`
+	Status            string `json:"status,omitempty"`
 }
 
 type hexInt int
