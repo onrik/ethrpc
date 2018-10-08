@@ -733,6 +733,12 @@ func (s *EthRPCTestSuite) TestGetBlock() {
 		GasPrice:         big.Int{},
 		Input:            "",
 	}, block.Transactions[0])
+
+	s.registerResponse("null", func(body []byte) {})
+
+	block, err = s.rpc.getBlock("eth_getBlockByHash", false)
+	s.Require().Nil(block)
+	s.Require().Nil(err)
 }
 
 func (s *EthRPCTestSuite) TestEthGetBlockByHash() {
