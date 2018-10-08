@@ -370,6 +370,14 @@ func (rpc *EthRPC) EthEstimateGas(transaction T) (int, error) {
 }
 
 func (rpc *EthRPC) getBlock(method string, withTransactions bool, params ...interface{}) (*Block, error) {
+	result, err := rpc.RawCall(method, params...)
+	if err != nil {
+		return nil, err
+	}
+	if bytes.Equal(result, []byte("null")) {
+		return nil, nil
+	}
+
 	var response proxyBlock
 	if withTransactions {
 		response = new(proxyBlockWithTransactions)
@@ -377,12 +385,12 @@ func (rpc *EthRPC) getBlock(method string, withTransactions bool, params ...inte
 		response = new(proxyBlockWithoutTransactions)
 	}
 
-	err := rpc.call(method, response, params...)
+	err = json.Unmarshal(result, response)
 	if err != nil {
 		return nil, err
 	}
-	block := response.toBlock()
 
+	block := response.toBlock()
 	return &block, nil
 }
 

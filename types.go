@@ -240,6 +240,10 @@ func (i *hexBig) UnmarshalJSON(data []byte) error {
 	return err
 }
 
+type proxyBlock interface {
+	toBlock() Block
+}
+
 type proxyBlockWithTransactions struct {
 	Number           hexInt             `json:"number"`
 	Hash             string             `json:"hash"`
@@ -263,10 +267,6 @@ type proxyBlockWithTransactions struct {
 
 func (proxy *proxyBlockWithTransactions) toBlock() Block {
 	return *(*Block)(unsafe.Pointer(proxy))
-}
-
-type proxyBlock interface {
-	toBlock() Block
 }
 
 type proxyBlockWithoutTransactions struct {
