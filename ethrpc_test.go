@@ -73,6 +73,10 @@ func (s *EthRPCTestSuite) TearDownTest() {
 	httpmock.Reset()
 }
 
+func (s *EthRPCTestSuite) TestURL() {
+	s.Require().Equal(s.rpc.url, s.rpc.URL())
+}
+
 func (s *EthRPCTestSuite) TestWeb3ClientVersion() {
 	response := `{"jsonrpc":"2.0", "id":1, "result": "test client"}`
 
