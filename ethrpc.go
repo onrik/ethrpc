@@ -232,7 +232,7 @@ func (rpc *EthRPC) EthGasPrice() (big.Int, error) {
 
 // EthAccounts returns a list of addresses owned by client.
 func (rpc *EthRPC) EthAccounts() ([]string, error) {
-	accounts := []string{}
+	var accounts []string
 
 	err := rpc.call("eth_accounts", &accounts)
 	return accounts, err
@@ -446,7 +446,7 @@ func (rpc *EthRPC) EthGetTransactionReceipt(hash string) (*TransactionReceipt, e
 
 // EthGetCompilers returns a list of available compilers in the client.
 func (rpc *EthRPC) EthGetCompilers() ([]string, error) {
-	compilers := []string{}
+	var compilers []string
 
 	err := rpc.call("eth_getCompilers", &compilers)
 	return compilers, err
@@ -484,21 +484,21 @@ func (rpc *EthRPC) EthUninstallFilter(filterID string) (bool, error) {
 
 // EthGetFilterChanges polling method for a filter, which returns an array of logs which occurred since last poll.
 func (rpc *EthRPC) EthGetFilterChanges(filterID string) ([]Log, error) {
-	var logs = []Log{}
+	var logs []Log
 	err := rpc.call("eth_getFilterChanges", &logs, filterID)
 	return logs, err
 }
 
 // EthGetFilterLogs returns an array of all logs matching filter with given id.
 func (rpc *EthRPC) EthGetFilterLogs(filterID string) ([]Log, error) {
-	var logs = []Log{}
+	var logs []Log
 	err := rpc.call("eth_getFilterLogs", &logs, filterID)
 	return logs, err
 }
 
 // EthGetLogs returns an array of all logs matching a given filter object.
 func (rpc *EthRPC) EthGetLogs(params FilterParams) ([]Log, error) {
-	var logs = []Log{}
+	var logs []Log
 	err := rpc.call("eth_getLogs", &logs, params)
 	return logs, err
 }
