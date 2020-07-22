@@ -124,6 +124,7 @@ type FilterParams struct {
 	ToBlock   string     `json:"toBlock,omitempty"`
 	Address   []string   `json:"address,omitempty"`
 	Topics    [][]string `json:"topics,omitempty"`
+	BlockHash string     `json:"blockHash,omitempty"`
 }
 
 // TransactionReceipt - transaction receipt object
