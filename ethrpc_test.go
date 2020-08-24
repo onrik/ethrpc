@@ -526,10 +526,7 @@ func (s *EthRPCTestSuite) TestSendTransaction() {
 	httpmock.Reset()
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_sendTransaction")
-		s.paramsEqual(body, `[{
-			"from": ""
-		}]`)
-
+		s.paramsEqual(body,`[{}]`)
 	})
 
 	txid, err = s.rpc.EthSendTransaction(t)
