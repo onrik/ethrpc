@@ -41,8 +41,9 @@ type T struct {
 
 // MarshalJSON implements the json.Unmarshaler interface.
 func (t T) MarshalJSON() ([]byte, error) {
-	params := map[string]interface{}{
-		"from": t.From,
+	params := map[string]interface{}{}
+	if t.From != "" {
+		params["from"] = t.From
 	}
 	if t.To != "" {
 		params["to"] = t.To
