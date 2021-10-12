@@ -54,6 +54,89 @@ func TestSyncingUnmarshal(t *testing.T) {
 	require.Equal(t, 1108, syncing.HighestBlock)
 }
 
+func TestBlockWithoutTxsUnmarshal(t *testing.T) {
+
+	data := []byte(`{
+	   "baseFeePerGas":"0x1ed813f503",
+	   "difficulty":"0x1dd3d924c8d8ef",
+	   "extraData":"0x4554482e4352415a59504f4f4c2e4f5247",
+	   "gasLimit":"0x1ca35d3",
+	   "gasUsed":"0x80b3a1",
+	   "hash":"0x42d1c51129ff905010a668a222798f7e935751b1dd320179d38ecb4d3268c418",
+	   "logsBloom":"0x10212082c1062093048220408e02124004099801004004082007294985488e08182c495c21020097c0087f0a004b8912326d84004954a820284413064020888842500200114c8928484022283c004024018280110060901284500441836715f918c09002420210401d88101402441970600014484a0035544b080514040801244d3081310500231386fa842000028014502b0a8b1367004800e200400418402002ea0a042d8c630002214892c0714da501840000e002900100722b02980c28002c08a00249220062204b49018002959528010304052022300008318684a020880030a92109416611881014089639228280e58c10b0008240c100608023b140d1",
+	   "miner":"0x4f9bebe3adc3c7f647c0023c60f91ac9dffa52d5",
+	   "mixHash":"0x01ecd40c9cba98c2f1c58b581f2b25f8ad40ec1790303cf6529401953813e89e",
+	   "nonce":"0xf36ba9063ff9355a",
+	   "number":"0xc8679a",
+	   "parentHash":"0x7eca2df7c366f578bac81ce35c8f9c0999c72c6684642d04284f7a99b5bbc7fd",
+	   "receiptsRoot":"0x29b0b30d0f969a702e37d539f459725610aff1fd306b078b45d70bdb185ab9a2",
+	   "sha3Uncles":"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+	   "size":"0x9911",
+	   "stateRoot":"0xbd4bf582b32e1d7413bfde4fbbe2c7f6d2807b909f14cd47ed4be20910bc7601",
+	   "timestamp":"0x612e3674",
+	   "totalDifficulty":"0x651197aca755e55d718",
+	   "transactions":[
+           "0x791a7b7f4adf85bbb3d9cf1862f3a85dde9df646174e455580a99e9a6a32aa37",
+           "0xe0dd65e400a7956a58e3c640379bafd5c6d98db751b9ebb07283be4ee5b2321d"
+	   ]
+}`)
+
+	response := new(proxyBlockWithoutTransactions)
+	err := json.Unmarshal(data, response)
+	require.Nil(t, err)
+
+	block := response.toBlock()
+	require.Equal(t, 13133722, block.Number)
+	require.Equal(t, *big.NewInt(132474205443), block.BaseFeePerGas)
+}
+
+func TestBlockWithTxsUnmarshal(t *testing.T) {
+
+	data := []byte(`{
+	   "baseFeePerGas":"0x1ed813f503",
+	   "difficulty":"0x1dd3d924c8d8ef",
+	   "extraData":"0x4554482e4352415a59504f4f4c2e4f5247",
+	   "gasLimit":"0x1ca35d3",
+	   "gasUsed":"0x80b3a1",
+	   "hash":"0x42d1c51129ff905010a668a222798f7e935751b1dd320179d38ecb4d3268c418",
+	   "logsBloom":"0x10212082c1062093048220408e02124004099801004004082007294985488e08182c495c21020097c0087f0a004b8912326d84004954a820284413064020888842500200114c8928484022283c004024018280110060901284500441836715f918c09002420210401d88101402441970600014484a0035544b080514040801244d3081310500231386fa842000028014502b0a8b1367004800e200400418402002ea0a042d8c630002214892c0714da501840000e002900100722b02980c28002c08a00249220062204b49018002959528010304052022300008318684a020880030a92109416611881014089639228280e58c10b0008240c100608023b140d1",
+	   "miner":"0x4f9bebe3adc3c7f647c0023c60f91ac9dffa52d5",
+	   "mixHash":"0x01ecd40c9cba98c2f1c58b581f2b25f8ad40ec1790303cf6529401953813e89e",
+	   "nonce":"0xf36ba9063ff9355a",
+	   "number":"0xc8679a",
+	   "parentHash":"0x7eca2df7c366f578bac81ce35c8f9c0999c72c6684642d04284f7a99b5bbc7fd",
+	   "receiptsRoot":"0x29b0b30d0f969a702e37d539f459725610aff1fd306b078b45d70bdb185ab9a2",
+	   "sha3Uncles":"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+	   "size":"0x9911",
+	   "stateRoot":"0xbd4bf582b32e1d7413bfde4fbbe2c7f6d2807b909f14cd47ed4be20910bc7601",
+	   "timestamp":"0x612e3674",
+	   "totalDifficulty":"0x651197aca755e55d718",
+	   "transactions":[
+			{
+				"blockHash": "0x3003694478c108eaec173afcb55eafbb754a0b204567329f623438727ffa90d8",
+				"blockNumber": "0x83319",
+				"from": "0x201354729f8d0f8b64e9a0c353c672c6a66b3857",
+				"gas": "0x15f90",
+				"gasPrice": "0x4a817c800",
+				"hash": "0xfc7dcd42eb0b7898af2f52f7c5af3bd03cdf71ab8b3ed5b3d3a3ff0d91343cbe",
+				"input": "0xe1fa8e8425f1af44eb895e4900b8be35d9fdc28744a6ef491c46ec8601990e12a58af0ed",
+				"nonce": "0x6ba1",
+				"to": "0xd10e3be2bc8f959bc8c41cf65f60de721cf89adf",
+				"transactionIndex": "0x3",
+				"value": "0x0"
+    		}
+	   ]
+}`)
+
+	response := new(proxyBlockWithTransactions)
+	err := json.Unmarshal(data, response)
+	require.Nil(t, err)
+
+	block := response.toBlock()
+	require.Equal(t, 13133722, block.Number)
+	require.Equal(t, *big.NewInt(132474205443), block.BaseFeePerGas)
+}
+
 func TestTransactionUnmarshal(t *testing.T) {
 	tx := new(Transaction)
 	err := json.Unmarshal([]byte("111"), tx)

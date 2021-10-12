@@ -157,6 +157,7 @@ func (t *TransactionReceipt) UnmarshalJSON(data []byte) error {
 // Block - block object
 type Block struct {
 	Number           int
+	BaseFeePerGas    big.Int
 	Hash             string
 	ParentHash       string
 	Nonce            string
@@ -247,6 +248,7 @@ type proxyBlock interface {
 
 type proxyBlockWithTransactions struct {
 	Number           hexInt             `json:"number"`
+	BaseFeePerGas    hexBig             `json:"baseFeePerGas"`
 	Hash             string             `json:"hash"`
 	ParentHash       string             `json:"parentHash"`
 	Nonce            string             `json:"nonce"`
@@ -272,6 +274,7 @@ func (proxy *proxyBlockWithTransactions) toBlock() Block {
 
 type proxyBlockWithoutTransactions struct {
 	Number           hexInt   `json:"number"`
+	BaseFeePerGas    hexBig   `json:"baseFeePerGas"`
 	Hash             string   `json:"hash"`
 	ParentHash       string   `json:"parentHash"`
 	Nonce            string   `json:"nonce"`
@@ -294,6 +297,7 @@ type proxyBlockWithoutTransactions struct {
 func (proxy *proxyBlockWithoutTransactions) toBlock() Block {
 	block := Block{
 		Number:           int(proxy.Number),
+		BaseFeePerGas:    big.Int(proxy.BaseFeePerGas),
 		Hash:             proxy.Hash,
 		ParentHash:       proxy.ParentHash,
 		Nonce:            proxy.Nonce,
