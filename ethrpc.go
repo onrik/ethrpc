@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"net/http"
 	"os"
+	"time"
 )
 
 // EthError - ethereum error
@@ -37,18 +38,21 @@ type ethRequest struct {
 
 // EthRPC - Ethereum rpc client
 type EthRPC struct {
-	url    string
-	client httpClient
-	log    logger
-	Debug  bool
+	url          string
+	client       httpClient
+	log          logger
+	Debug        bool
+	retries      int
+	retryBackoff int // milliseconds
 }
 
 // New create new rpc client with given url
 func New(url string, options ...func(rpc *EthRPC)) *EthRPC {
 	rpc := &EthRPC{
-		url:    url,
-		client: http.DefaultClient,
-		log:    log.New(os.Stderr, "", log.LstdFlags),
+		url:     url,
+		client:  http.DefaultClient,
+		log:     log.New(os.Stderr, "", log.LstdFlags),
+		retries: 0,
 	}
 	for _, option := range options {
 		option(rpc)
@@ -57,13 +61,27 @@ func New(url string, options ...func(rpc *EthRPC)) *EthRPC {
 	return rpc
 }
 
-// NewEthRPC create new rpc client with given url
+// NewEthRPC create new rpc client with given url and retries
 func NewEthRPC(url string, options ...func(rpc *EthRPC)) *EthRPC {
 	return New(url, options...)
 }
 
 func (rpc *EthRPC) call(method string, target interface{}, params ...interface{}) error {
-	result, err := rpc.Call(method, params...)
+
+	// Retry the request in case it fails
+	retries := rpc.retries
+	var err error
+	var result json.RawMessage
+	for retries <= 0 {
+		result, err = rpc.Call(method, params...)
+		if err == nil {
+			break
+		}
+
+		time.Sleep(time.Duration(rpc.retryBackoff) * time.Millisecond)
+		retries -= 1
+	}
+
 	if err != nil {
 		return err
 	}
