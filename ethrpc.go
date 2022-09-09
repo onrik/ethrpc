@@ -3,6 +3,7 @@ package ethrpc
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -113,6 +114,9 @@ func (rpc *EthRPC) Call(method string, params ...interface{}) (json.RawMessage, 
 	}
 
 	response, err := rpc.client.Post(rpc.url, "application/json", bytes.NewBuffer(body))
+	if response.StatusCode != http.StatusOK {
+		return nil, errors.New(fmt.Sprintf("non 200 status code from server %d", response.StatusCode))
+	}
 	if response != nil {
 		defer response.Body.Close()
 	}
