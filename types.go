@@ -3,7 +3,9 @@ package ethrpc
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"math/big"
+	"strconv"
 	"unsafe"
 )
 
@@ -229,6 +231,14 @@ func (i *hexInt) UnmarshalJSON(data []byte) error {
 	*i = hexInt(result)
 
 	return err
+}
+
+func (i *hexInt) MarshalJSON() ([]byte, error) {
+	// Convert the hexInt value to a base 10 string
+	str := strconv.FormatInt(int64(*i), 10)
+
+	// Enclose the string in quotation marks and return it as a []byte value
+	return []byte(fmt.Sprintf(`"%s"`, str)), nil
 }
 
 type hexBig big.Int
