@@ -30,7 +30,7 @@ func TestHexIntMarshal(t *testing.T) {
 	data, err := json.Marshal(&test)
 	require.Nil(t, err)
 
-	expected := []byte(`{"id": "0x1cc348"}`)
+	expected := []byte(`{"id":"0x1cc348"}`)
 	require.Equal(t, expected, data)
 }
 

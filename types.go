@@ -235,10 +235,10 @@ func (i *hexInt) UnmarshalJSON(data []byte) error {
 }
 
 func (i *hexInt) MarshalJSON() ([]byte, error) {
-	// Convert the hexInt value to a base 10 string
-	str := strconv.FormatInt(int64(*i), 10)
+	// Convert the hexInt value to a base 16 string
+	str := strconv.FormatInt(int64(*i), 16)
 
-	return []byte(fmt.Sprintf(`"%s"`, str)), nil
+	return []byte(fmt.Sprintf(`"0x%s"`, str)), nil
 }
 
 type hexBig big.Int
