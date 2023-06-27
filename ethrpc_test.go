@@ -1,9 +1,10 @@
 package ethrpc
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math/big"
 	"net/http"
 	"strconv"
@@ -12,7 +13,6 @@ import (
 	"github.com/jarcoal/httpmock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"github.com/tidwall/gjson"
 )
 
 type EthRPCTestSuite struct {
@@ -38,25 +38,36 @@ func (s *EthRPCTestSuite) registerResponseError(err error) {
 
 func (s *EthRPCTestSuite) getBody(request *http.Request) []byte {
 	defer request.Body.Close()
-	body, err := ioutil.ReadAll(request.Body)
+	body, err := io.ReadAll(request.Body)
 	s.Require().Nil(err)
 
 	return body
 }
 
 func (s *EthRPCTestSuite) methodEqual(body []byte, expected string) {
-	value := gjson.GetBytes(body, "method").String()
+	response := struct {
+		Method string `json:"method"`
+	}{}
+	err := json.Unmarshal(body, &response)
+	s.Require().Nil(err)
 
-	s.Require().Equal(expected, value)
+	s.Require().Equal(expected, response.Method)
 }
 
 func (s *EthRPCTestSuite) paramsEqual(body []byte, expected string) {
-	value := gjson.GetBytes(body, "params").Raw
+	response := struct {
+		Params *json.RawMessage `json:"params"`
+	}{}
+	err := json.Unmarshal(body, &response)
+	s.Require().Nil(err)
+
 	if expected == "null" {
-		s.Require().Equal(expected, value)
-	} else {
-		s.JSONEq(expected, value)
+		s.Require().Nil(response.Params)
+		return
 	}
+
+	s.Require().NotNil(response.Params)
+	s.JSONEq(expected, string(*response.Params))
 }
 
 func (s *EthRPCTestSuite) SetupSuite() {
@@ -526,7 +537,7 @@ func (s *EthRPCTestSuite) TestSendTransaction() {
 	httpmock.Reset()
 	s.registerResponse(fmt.Sprintf(`"%s"`, result), func(body []byte) {
 		s.methodEqual(body, "eth_sendTransaction")
-		s.paramsEqual(body,`[{}]`)
+		s.paramsEqual(body, `[{}]`)
 	})
 
 	txid, err = s.rpc.EthSendTransaction(t)
