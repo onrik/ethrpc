@@ -20,6 +20,20 @@ func TestHexIntUnmarshal(t *testing.T) {
 	require.Equal(t, hexInt(1885000), test.ID)
 }
 
+func TestHexIntMarshal(t *testing.T) {
+	test := struct {
+		ID hexInt `json:"id"`
+	}{
+		ID: hexInt(1885000),
+	}
+
+	data, err := json.Marshal(&test)
+	require.Nil(t, err)
+
+	expected := []byte(`{"id":"0x1cc348"}`)
+	require.Equal(t, expected, data)
+}
+
 func TestHexBigUnmarshal(t *testing.T) {
 	test := struct {
 		ID hexBig `json:"id"`
