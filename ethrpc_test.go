@@ -1148,6 +1148,40 @@ func (s *EthRPCTestSuite) TestEthUninstallFilter() {
 	s.Require().Equal(boolRes, uninstall)
 }
 
+func (s *EthRPCTestSuite) TestGetBlocksByRange() {
+	// Test with transactions
+	from := 3274863
+	to := from + 1
+
+	httpmock.Reset()
+	httpmock.RegisterResponder("POST", s.rpc.url, func(request *http.Request) (*http.Response, error) {
+		s.Equal(`[{"id":3274863,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x31f86f",true]},{"id":3274864,"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["0x31f870",true]}]`, string(s.getBody(request)))
+		return httpmock.NewStringResponse(200, `[]`), nil
+	})
+
+	_, err := s.rpc.GetBlocksByRange(from, to, true)
+	s.Require().Nil(err)
+}
+
+func TestThings(t *testing.T) {
+	from := 3274863
+	to := from + 100
+
+	rpc := New("https://eth.llamarpc.com")
+	blocks, err := rpc.GetBlocksByRange(from, to, true)
+	fmt.Printf("blocks %#v\n\n\n", blocks)
+	fmt.Printf("err %#v\n\n\n", err)
+
+	logs, err := rpc.EthGetLogs(FilterParams{
+		FromBlock: IntToHex(from),
+		ToBlock:   IntToHex(to),
+	})
+	fmt.Printf("logs %#v\n\n\n", logs)
+	fmt.Printf("err %#v\n\n\n", err)
+
+	t.Fatal()
+}
+
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
 }

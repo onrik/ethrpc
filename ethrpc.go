@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/big"
@@ -511,4 +512,80 @@ func (rpc *EthRPC) Eth1() *big.Int {
 // Eth1 returns 1 ethereum value (10^18 wei)
 func Eth1() *big.Int {
 	return big.NewInt(1000000000000000000)
+}
+
+// GetBlocksByRange returns blocks by range
+func (rpc *EthRPC) GetBlocksByRange(from, to int, withTransactions bool) ([]*Block, error) {
+	var requests []ethRequest
+	for i := from; i <= to; i++ {
+		requests = append(requests, ethRequest{
+			ID:      i,
+			JSONRPC: "2.0",
+			Method:  "eth_getBlockByNumber",
+			Params:  []interface{}{IntToHex(i), withTransactions},
+		})
+	}
+
+	responses, err := rpc.batchCall(requests)
+	if err != nil {
+		return nil, err
+	}
+
+	var blocks []*Block
+	for _, res := range responses {
+		var proxy proxyBlock
+		if withTransactions {
+			proxy = new(proxyBlockWithTransactions)
+		} else {
+			proxy = new(proxyBlockWithoutTransactions)
+		}
+
+		if err := json.Unmarshal(res, proxy); err != nil {
+			return nil, err
+		}
+
+		block := proxy.toBlock()
+		blocks = append(blocks, &block)
+	}
+
+	return blocks, nil
+}
+
+func (rpc *EthRPC) batchCall(req []ethRequest) ([]json.RawMessage, error) {
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := rpc.client.Post(rpc.url, "application/json", bytes.NewBuffer(body))
+	if response != nil {
+		defer response.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if rpc.Debug {
+		rpc.log.Println(fmt.Sprintf("Batch Request: %s\nResponse: %s\n", body, data))
+	}
+
+	var responses []ethResponse
+	if err := json.Unmarshal(data, &responses); err != nil {
+		return nil, err
+	}
+
+	var results []json.RawMessage
+	for _, res := range responses {
+		if res.Error != nil {
+			return nil, *res.Error
+		}
+		results = append(results, res.Result)
+	}
+
+	return results, nil
 }
