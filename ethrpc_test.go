@@ -1163,25 +1163,6 @@ func (s *EthRPCTestSuite) TestGetBlocksByRange() {
 	s.Require().Nil(err)
 }
 
-func TestThings(t *testing.T) {
-	from := 3274863
-	to := from + 100
-
-	rpc := New("https://eth.llamarpc.com")
-	blocks, err := rpc.GetBlocksByRange(from, to, true)
-	fmt.Printf("blocks %#v\n\n\n", blocks)
-	fmt.Printf("err %#v\n\n\n", err)
-
-	logs, err := rpc.EthGetLogs(FilterParams{
-		FromBlock: IntToHex(from),
-		ToBlock:   IntToHex(to),
-	})
-	fmt.Printf("logs %#v\n\n\n", logs)
-	fmt.Printf("err %#v\n\n\n", err)
-
-	t.Fatal()
-}
-
 func TestEthRPCTestSuite(t *testing.T) {
 	suite.Run(t, new(EthRPCTestSuite))
 }
